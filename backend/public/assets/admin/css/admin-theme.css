@@ -1,0 +1,463 @@
+/**
+ * Admin theme – layout and left navigation improvements
+ * Loaded after style.css and custom.css
+ */
+
+/* ========== Variables ========== */
+:root {
+    --admin-sidebar-bg: #1a1d24;
+    --admin-sidebar-text: #a0aec0;
+    --admin-sidebar-text-hover: #e2e8f0;
+    --admin-sidebar-active-bg: rgba(67, 212, 119, 0.15);
+    --admin-sidebar-active-border: var(--primary, #43d477);
+    --admin-sidebar-header: #718096;
+    --admin-content-bg: #f4f6f9;
+    --admin-card-radius: 12px;
+    --admin-navbar-height: 64px;
+    --admin-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+    --admin-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --admin-shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* ========== Navbar – Global search ========== */
+.admin-navbar-search-wrap {
+    max-width: 420px;
+}
+
+.admin-global-search {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 8px 14px;
+    transition: background 0.2s, border-color 0.2s;
+    width: 100%;
+    min-width: 200px;
+}
+
+.admin-global-search:focus-within {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.admin-search-input {
+    background: transparent !important;
+    border: none !important;
+    color: #fff !important;
+    font-size: 14px;
+    width: 100%;
+    min-width: 140px;
+}
+
+.admin-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.admin-search-kbd {
+    font-size: 11px;
+    padding: 2px 6px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* User dropdown – advanced */
+.admin-user-dropdown {
+    min-width: 220px;
+    padding: 8px 0 !important;
+    border-radius: 12px !important;
+    box-shadow: var(--admin-shadow-lg) !important;
+    border: 1px solid #e8ecf1 !important;
+}
+
+.admin-user-dropdown .dropdown-item {
+    padding: 10px 20px;
+    font-size: 14px;
+}
+
+.admin-user-dropdown .dropdown-item.has-icon i {
+    width: 20px;
+    margin-right: 10px;
+    opacity: 0.8;
+}
+
+/* ========== Dashboard hero ========== */
+.admin-dashboard-hero.hero-bg {
+    background: linear-gradient(135deg, #1a1d24 0%, #252931 50%, #1e2430 100%) !important;
+    border-radius: var(--admin-card-radius);
+    box-shadow: var(--admin-shadow);
+    overflow: hidden;
+}
+
+.admin-dashboard-hero .hero-inner {
+    padding: 28px 32px;
+}
+
+.admin-welcome-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+}
+
+.admin-quick-link {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-quick-link:hover {
+    transform: translateY(-1px);
+}
+
+/* ========== Stat cards – advanced ========== */
+.main-content .card-statistic-1,
+.main-content .card-statistic-2 {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #e8ecf1;
+}
+
+.main-content .card-statistic-1:hover,
+.main-content .card-statistic-2:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--admin-shadow);
+}
+
+.main-content .card-statistic-1 .card-icon {
+    border-radius: 12px;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+.main-content .card-statistic-1 .card-wrap {
+    padding-left: 8px;
+}
+
+.main-content .card-statistic-2 .card-icon {
+    border-radius: 12px;
+}
+
+.main-content .card-hero {
+    border-radius: var(--admin-card-radius);
+    border: 1px solid #e8ecf1;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+}
+
+.main-content .card-hero:hover {
+    box-shadow: var(--admin-shadow);
+}
+
+.main-content .card-hero .card-header {
+    padding: 20px;
+}
+
+.main-content .card-hero .ticket-item {
+    padding: 14px 20px;
+    transition: background 0.15s;
+}
+
+.main-content .card-hero .ticket-item:hover {
+    background: #f8fafc;
+}
+
+/* Utility – gap for flex (Bootstrap 4 compat) */
+.gap-2 { gap: 0.5rem; }
+
+/* ========== Main wrapper & content ========== */
+.main-wrapper {
+    min-height: 100vh;
+    background: var(--admin-content-bg);
+}
+
+.main-content {
+    padding-top: calc(var(--admin-navbar-height) + 24px) !important;
+    padding-left: 268px !important;
+    padding-right: 28px !important;
+    padding-bottom: 32px !important;
+}
+
+/* ========== Left sidebar ========== */
+.main-sidebar {
+    width: 260px !important;
+    background: var(--admin-sidebar-bg) !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.08) !important;
+    border-right: none !important;
+}
+
+#sidebar-wrapper {
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 100%;
+}
+
+/* Sidebar brand / logo */
+.main-sidebar .sidebar-brand,
+.main-sidebar .sidebar-brand.sidebar-brand-sm {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    margin: 0;
+}
+
+.main-sidebar .sidebar-brand a,
+.main-sidebar .sidebar-brand.sidebar-brand-sm a {
+    color: #fff !important;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    opacity: 0.95;
+}
+
+.main-sidebar .sidebar-brand.sidebar-brand-sm a {
+    font-size: 18px;
+}
+
+/* Menu list */
+.main-sidebar .sidebar-menu {
+    padding: 12px 10px 24px !important;
+}
+
+.main-sidebar .sidebar-menu > li {
+    margin-bottom: 2px;
+}
+
+/* Section headers (EDUCATION, USERS, etc.) */
+.main-sidebar .sidebar-menu li.menu-header {
+    padding: 16px 16px 8px !important;
+    font-size: 11px !important;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--admin-sidebar-header) !important;
+    opacity: 0.9;
+}
+
+.main-sidebar .sidebar-menu li.menu-header:not(:first-child) {
+    margin-top: 8px !important;
+}
+
+/* Nav links – base */
+.main-sidebar .sidebar-menu li a {
+    padding: 10px 14px 10px 14px !important;
+    border-radius: 10px;
+    color: var(--admin-sidebar-text) !important;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.2s ease, color 0.2s ease;
+    margin: 0 6px;
+}
+
+.main-sidebar .sidebar-menu li a i {
+    width: 22px !important;
+    margin-right: 12px !important;
+    font-size: 15px;
+    opacity: 0.85;
+}
+
+.main-sidebar .sidebar-menu li a:hover {
+    background: rgba(255, 255, 255, 0.06) !important;
+    color: var(--admin-sidebar-text-hover) !important;
+}
+
+.main-sidebar .sidebar-menu li a:hover i {
+    opacity: 1;
+}
+
+/* Active state */
+.main-sidebar .sidebar-menu li.active > a {
+    background: var(--admin-sidebar-active-bg) !important;
+    color: var(--admin-sidebar-active-border) !important;
+    font-weight: 600;
+    border-left: 3px solid var(--admin-sidebar-active-border);
+    padding-left: 11px !important;
+}
+
+.main-sidebar .sidebar-menu li.active > a i {
+    color: var(--admin-sidebar-active-border) !important;
+    opacity: 1;
+}
+
+/* Dropdown arrow */
+.main-sidebar .sidebar-menu li a.has-dropdown:after {
+    opacity: 0.7;
+    font-size: 12px;
+}
+
+.main-sidebar .sidebar-menu li.active > a.has-dropdown:after {
+    color: var(--admin-sidebar-active-border);
+    opacity: 1;
+}
+
+/* Dropdown submenu */
+.main-sidebar .sidebar-menu li ul.dropdown-menu {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: none !important;
+    padding: 6px 0 6px 0 !important;
+    margin: 4px 0 4px 20px !important;
+    border-radius: 8px;
+    border-left: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.main-sidebar .sidebar-menu li ul.dropdown-menu li a {
+    height: 38px !important;
+    padding: 0 14px 0 36px !important;
+    font-size: 13px;
+    margin: 0;
+    border-radius: 6px;
+    margin: 0 6px 2px;
+}
+
+.main-sidebar .sidebar-menu li ul.dropdown-menu li a:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.main-sidebar .sidebar-menu li ul.dropdown-menu li.active > a {
+    background: var(--admin-sidebar-active-bg) !important;
+    color: var(--admin-sidebar-active-border) !important;
+    border-left: none;
+    padding-left: 36px !important;
+}
+
+.main-sidebar .sidebar-menu li.active ul.dropdown-menu {
+    background: transparent !important;
+}
+
+/* Logout link at bottom */
+.main-sidebar .sidebar-menu li:last-child a {
+    margin-top: 8px;
+    color: #e53e3e !important;
+}
+
+.main-sidebar .sidebar-menu li:last-child a:hover {
+    background: rgba(229, 62, 62, 0.15) !important;
+    color: #fc8181 !important;
+}
+
+/* ========== Navbar (top bar) ========== */
+.navbar-bg {
+    background: linear-gradient(135deg, #1a1d24 0%, #252931 100%) !important;
+    height: var(--admin-navbar-height) !important;
+}
+
+.main-navbar.navbar {
+    padding: 0 20px;
+    height: var(--admin-navbar-height);
+    background: transparent !important;
+}
+
+.main-navbar .nav-link.nav-link-lg {
+    color: rgba(255, 255, 255, 0.9) !important;
+    padding: 0 12px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    transition: background 0.2s;
+}
+
+.main-navbar .nav-link.nav-link-lg:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff !important;
+}
+
+.main-navbar .nav-link.nav-link-user {
+    color: #fff !important;
+    padding: 0 12px 0 8px;
+    border-radius: 12px;
+}
+
+.main-navbar .nav-link.nav-link-user:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.main-navbar .nav-link.nav-link-user img {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ========== Content sections ========== */
+.main-content .section {
+    margin-bottom: 28px;
+}
+
+.main-content .section .section-header {
+    margin-bottom: 20px;
+}
+
+.main-content .section .section-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #1a202c;
+}
+
+/* Cards inside content */
+.main-content .card {
+    border-radius: var(--admin-card-radius);
+    border: 1px solid #e8ecf1;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.main-content .card-header {
+    border-bottom: 1px solid #e8ecf1;
+    font-weight: 600;
+    color: #2d3748;
+    padding: 16px 20px;
+    border-radius: var(--admin-card-radius) var(--admin-card-radius) 0 0;
+}
+
+/* Breadcrumb */
+.main-content .breadcrumb {
+    background: transparent;
+    padding: 0 0 16px;
+    font-size: 13px;
+}
+
+/* ========== Sidebar mini mode ========== */
+body.sidebar-mini .main-sidebar {
+    width: 72px !important;
+}
+
+body.sidebar-mini .main-content {
+    padding-left: 88px !important;
+}
+
+body.sidebar-mini .main-sidebar .sidebar-menu li a {
+    margin: 0 4px;
+    justify-content: center;
+    padding: 10px !important;
+}
+
+body.sidebar-mini .main-sidebar .sidebar-menu li.active > a {
+    border-left: none;
+    border-radius: 10px;
+    background: var(--admin-sidebar-active-bg) !important;
+}
+
+/* ========== Scrollbar in sidebar ========== */
+.main-sidebar #sidebar-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.main-sidebar #sidebar-wrapper::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+}
+
+.main-sidebar #sidebar-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+}
+
+.main-sidebar #sidebar-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 991.98px) {
+    .main-content {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+        padding-top: calc(var(--admin-navbar-height) + 16px) !important;
+    }
+}

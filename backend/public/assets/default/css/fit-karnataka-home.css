@@ -1,0 +1,572 @@
+/**
+ * Fit Karnataka Mission - Homepage Redesign
+ * Energetic, clean, government initiative style
+ * Red + Yellow accents, white/soft grey sections, 14px rounded, soft shadows
+ */
+
+/* Theme variables */
+.fit-karnataka-home {
+  --fk-primary: #c41e3a;
+  --fk-primary-dark: #9e1830;
+  --fk-accent: #ffc107;
+  --fk-accent-soft: #fff3cd;
+  --fk-bg-soft: #f8f9fa;
+  --fk-bg-section: #ffffff;
+  --fk-text-dark: #1a1a1a;
+  --fk-text-muted: #5a6c7d;
+  --fk-radius: 14px;
+  --fk-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --fk-shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.12);
+  scroll-behavior: smooth;
+}
+
+/* ========== 1. HERO SECTION ========== */
+.fit-karnataka-home .fk-hero {
+  position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 6rem 0 5rem;
+  overflow: hidden;
+}
+
+.fit-karnataka-home .fk-hero .fk-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(196, 30, 58, 0.85) 0%, rgba(0, 0, 0, 0.6) 100%);
+  z-index: 1;
+}
+
+.fit-karnataka-home .fk-hero .container {
+  position: relative;
+  z-index: 2;
+}
+
+.fit-karnataka-home .fk-hero h1 {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 800;
+  line-height: 1.2;
+  color: #fff;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+.fit-karnataka-home .fk-hero .fk-hero-lead {
+  font-size: 1.15rem;
+  color: rgba(255, 255, 255, 0.95);
+  max-width: 520px;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.fit-karnataka-home .fk-hero .fk-hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.fit-karnataka-home .fk-hero .fk-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  border-radius: var(--fk-radius);
+  background: var(--fk-accent);
+  color: var(--fk-text-dark);
+  border: none;
+  box-shadow: var(--fk-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fit-karnataka-home .fk-hero .fk-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--fk-shadow-hover);
+  color: var(--fk-text-dark);
+}
+
+.fit-karnataka-home .fk-hero .fk-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border-radius: var(--fk-radius);
+  background: transparent;
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  transition: background 0.2s, color 0.2s;
+}
+
+.fit-karnataka-home .fk-hero .fk-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.fit-karnataka-home .fk-hero .fk-hero-image-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fit-karnataka-home .fk-hero .fk-hero-image-wrap img,
+.fit-karnataka-home .fk-hero .fk-hero-image-wrap .img-cover {
+  border-radius: var(--fk-radius);
+  box-shadow: var(--fk-shadow-hover);
+  max-height: 380px;
+  object-fit: contain;
+}
+
+@media (max-width: 991px) {
+  .fit-karnataka-home .fk-hero {
+    min-height: auto;
+    padding: 4rem 0 3rem;
+    text-align: center;
+  }
+  .fit-karnataka-home .fk-hero .fk-hero-lead { margin-left: auto; margin-right: auto; }
+  .fit-karnataka-home .fk-hero .fk-hero-ctas { justify-content: center; }
+  .fit-karnataka-home .fk-hero .fk-hero-image-wrap { margin-top: 2rem; }
+}
+
+/* ========== 2. ABOUT SECTION ========== */
+.fit-karnataka-home .fk-about {
+  padding: 4rem 0;
+  background: var(--fk-bg-soft);
+}
+
+.fit-karnataka-home .fk-about .fk-section-head {
+  margin-bottom: 1rem;
+}
+
+.fit-karnataka-home .fk-about h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--fk-text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.fit-karnataka-home .fk-about .fk-section-hint {
+  font-size: 1rem;
+  color: var(--fk-text-muted);
+  line-height: 1.6;
+}
+
+.fit-karnataka-home .fk-about .fk-about-cards .card {
+  border: none;
+  border-radius: var(--fk-radius);
+  box-shadow: var(--fk-shadow);
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fit-karnataka-home .fk-about .fk-about-cards .card .card-img-top {
+  width: 100%;
+  object-fit: cover;
+}
+
+.fit-karnataka-home .fk-about .fk-about-cards .card .card-body {
+  padding: 1.25rem;
+}
+
+.fit-karnataka-home .fk-about .fk-about-cards .card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--fk-shadow-hover);
+}
+
+.fit-karnataka-home .fk-about .fk-about-cards .fk-card-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--fk-primary) 0%, var(--fk-primary-dark) 100%);
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.fit-karnataka-home .fk-about .fk-section-head {
+  margin-bottom: 0;
+}
+
+.fit-karnataka-home .badge.badge-danger.rounded-pill {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.fit-karnataka-home .fk-about .fk-about-cards .card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--fk-text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.fit-karnataka-home .fk-about .fk-about-cards .card-text {
+  font-size: 0.95rem;
+  color: var(--fk-text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ========== 3. PROGRAMS SECTION ========== */
+.fit-karnataka-home .fk-programs {
+  padding: 4rem 0;
+  background: var(--fk-bg-section);
+}
+
+.fit-karnataka-home .fk-section-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--fk-text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.fit-karnataka-home .fk-programs .fk-program-card {
+  border: none;
+  border-radius: var(--fk-radius);
+  box-shadow: var(--fk-shadow);
+  overflow: hidden;
+  height: 100%;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fit-karnataka-home .fk-programs .fk-program-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--fk-shadow-hover);
+}
+
+.fit-karnataka-home .fk-programs .fk-program-card .fk-program-thumb {
+  height: 180px;
+  overflow: hidden;
+  background: var(--fk-bg-soft);
+}
+
+.fit-karnataka-home .fk-programs .fk-program-card .fk-program-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fit-karnataka-home .fk-programs .fk-program-card .card-body {
+  padding: 1.25rem;
+}
+
+.fit-karnataka-home .fk-programs .fk-program-card .card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--fk-text-dark);
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.fit-karnataka-home .fk-programs .fk-program-card .fk-program-desc {
+  font-size: 0.9rem;
+  color: var(--fk-text-muted);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.fit-karnataka-home .fk-programs .fk-btn-learn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 10px;
+  background: var(--fk-primary);
+  color: #fff;
+  border: none;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.fit-karnataka-home .fk-programs .fk-btn-learn:hover {
+  background: var(--fk-primary-dark);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* ========== 4. IMPACT STATS SECTION ========== */
+.fit-karnataka-home .fk-stats {
+  padding: 4rem 0;
+  background: linear-gradient(135deg, var(--fk-primary) 0%, var(--fk-primary-dark) 100%);
+  color: #fff;
+}
+
+.fit-karnataka-home .fk-stats .fk-stat-item {
+  text-align: center;
+  padding: 1.5rem 0.5rem;
+}
+
+.fit-karnataka-home .fk-stats .fk-stat-number {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+}
+
+.fit-karnataka-home .fk-stats .fk-stat-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+.fit-karnataka-home .fk-stats .fk-stat-desc {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin-top: 0.25rem;
+}
+
+/* ========== 5. EVENTS / CHALLENGES SECTION ========== */
+.fit-karnataka-home .fk-events {
+  padding: 4rem 0;
+  background: var(--fk-bg-soft);
+}
+
+.fit-karnataka-home .fk-events .fk-event-card {
+  border: none;
+  border-radius: var(--fk-radius);
+  box-shadow: var(--fk-shadow);
+  overflow: hidden;
+  height: 100%;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fit-karnataka-home .fk-events .fk-event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--fk-shadow-hover);
+}
+
+.fit-karnataka-home .fk-events .fk-event-date-badge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 10px;
+  background: var(--fk-accent);
+  color: var(--fk-text-dark);
+  margin-bottom: 0.75rem;
+}
+
+.fit-karnataka-home .fk-events .fk-event-card .card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--fk-text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.fit-karnataka-home .fk-events .fk-event-card .card-text {
+  font-size: 0.9rem;
+  color: var(--fk-text-muted);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.fit-karnataka-home .fk-events .fk-btn-register {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 10px;
+  background: var(--fk-primary);
+  color: #fff;
+  border: none;
+  transition: background 0.2s;
+}
+
+.fit-karnataka-home .fk-events .fk-btn-register:hover {
+  background: var(--fk-primary-dark);
+  color: #fff;
+}
+
+/* ========== 6. TESTIMONIALS SECTION ========== */
+.fit-karnataka-home .fk-testimonials {
+  padding: 4rem 0;
+  background: var(--fk-bg-section);
+}
+
+.fit-karnataka-home .fk-testimonials .fk-testimonial-card {
+  border: none;
+  border-radius: var(--fk-radius);
+  box-shadow: var(--fk-shadow);
+  padding: 2rem;
+  height: 100%;
+  text-align: center;
+  transition: box-shadow 0.2s;
+}
+
+.fit-karnataka-home .fk-testimonials .fk-testimonial-card:hover {
+  box-shadow: var(--fk-shadow-hover);
+}
+
+.fit-karnataka-home .fk-testimonials .fk-testimonial-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 1rem;
+  border: 3px solid var(--fk-accent-soft);
+}
+
+.fit-karnataka-home .fk-testimonials .fk-testimonial-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--fk-text-dark);
+  margin-bottom: 0.25rem;
+}
+
+.fit-karnataka-home .fk-testimonials .fk-testimonial-role {
+  font-size: 0.9rem;
+  color: var(--fk-text-muted);
+  margin-bottom: 1rem;
+}
+
+.fit-karnataka-home .fk-testimonials .fk-testimonial-text {
+  font-size: 0.95rem;
+  color: var(--fk-text-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ========== 7. CTA SECTION ========== */
+.fit-karnataka-home .fk-cta {
+  padding: 4rem 0;
+  background: linear-gradient(135deg, var(--fk-primary) 0%, var(--fk-primary-dark) 100%);
+  color: #fff;
+  text-align: center;
+}
+
+.fit-karnataka-home .fk-cta h2 {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.fit-karnataka-home .fk-cta .fk-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: var(--fk-radius);
+  background: var(--fk-accent);
+  color: var(--fk-text-dark);
+  border: none;
+  box-shadow: var(--fk-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fit-karnataka-home .fk-cta .fk-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--fk-shadow-hover);
+  color: var(--fk-text-dark);
+}
+
+/* ========== 8. FOOTER (minimal government style) - applies when footer has .fk-footer ========== */
+.fk-footer,
+.fit-karnataka-home .fk-footer {
+  background: #1a1a1a !important;
+  padding: 3rem 0 1.5rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.fk-footer .fk-footer-title,
+.fit-karnataka-home .fk-footer .fk-footer-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.fk-footer .fk-footer-links,
+.fk-footer .fk-footer-links a,
+.fit-karnataka-home .fk-footer .fk-footer-links a {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.8;
+  text-decoration: none;
+}
+
+.fk-footer .fk-footer-links a:hover,
+.fit-karnataka-home .fk-footer .fk-footer-links a:hover {
+  color: var(--fk-accent);
+}
+
+.fk-footer .fk-footer-social,
+.fit-karnataka-home .fk-footer .fk-footer-social {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0;
+}
+
+.fk-footer .fk-footer-social a,
+.fit-karnataka-home .fk-footer .fk-footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transition: background 0.2s, color 0.2s;
+}
+
+.fk-footer .fk-footer-social a:hover,
+.fit-karnataka-home .fk-footer .fk-footer-social a:hover {
+  background: var(--fk-primary);
+  color: #fff;
+}
+
+.fk-footer .fk-footer-bottom,
+.fit-karnataka-home .fk-footer .fk-footer-bottom {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+}
+
+.fk-footer .text-white-80 {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Home sections spacing override when inside Fit Karnataka wrapper */
+.fit-karnataka-home .home-sections {
+  margin-top: 4rem;
+}
+
+.fit-karnataka-home .home-sections .section-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--fk-text-dark);
+}
+
+.fit-karnataka-home .home-sections .section-hint {
+  color: var(--fk-text-muted);
+}
+
+/* Swiper pagination bullets - accent color */
+.fit-karnataka-home .swiper-pagination .swiper-pagination-bullet.swiper-pagination-bullet-active:after {
+  background-color: var(--fk-primary);
+}
+
+/* Badge soft style */
+.fit-karnataka-home .badge.fk-badge-soft {
+  border-radius: 10px;
+  padding: 0.35rem 0.75rem;
+  font-weight: 600;
+}
