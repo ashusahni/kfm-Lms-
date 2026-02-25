@@ -8,6 +8,7 @@ import {
   TrendingUp,
   Bell,
   ShoppingCart,
+  Video,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { notificationsService } from "@/services/notifications";
@@ -15,6 +16,7 @@ import { notificationsService } from "@/services/notifications";
 const navItems = [
   { to: "/panel", end: true, label: "Dashboard", icon: LayoutDashboard },
   { to: "/panel/programs", end: false, label: "My Programs", icon: BookOpen },
+  { to: "/panel/meetings", end: true, label: "Meetings", icon: Video },
   { to: "/panel/cart", end: true, label: "Cart", icon: ShoppingCart },
   { to: "/panel/health-log", end: false, label: "Daily Log", icon: ClipboardList },
   { to: "/panel/progress", end: true, label: "Progress & Adherence", icon: TrendingUp },

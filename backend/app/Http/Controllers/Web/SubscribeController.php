@@ -92,7 +92,7 @@ class SubscribeController extends Controller
             ];
             return back()->with(['toast' => $toastData]);
         } else {
-            return redirect('/login');
+            return redirect(frontend_url('/login'));
         }
     }
 }

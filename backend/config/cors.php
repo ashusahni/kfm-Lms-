@@ -19,7 +19,11 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    // When FRONTEND_URL is set in .env, only that origin is allowed (recommended for production).
+    // Otherwise allow all origins (convenient for local dev).
+    'allowed_origins' => config('frontend.url')
+        ? [rtrim(config('frontend.url'), '/')]
+        : ['*'],
 
     'allowed_origins_patterns' => [],
 

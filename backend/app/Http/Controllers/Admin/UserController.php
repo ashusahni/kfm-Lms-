@@ -1221,7 +1221,7 @@ class UserController extends Controller
         return response()->json($users->get(), 200);
     }
 
-    public function impersonate($user_id)
+    public function impersonate(Request $request, $user_id)
     {
         $this->authorize('admin_users_impersonate');
 
@@ -1233,7 +1233,12 @@ class UserController extends Controller
 
         session()->put(['impersonated' => $user->id]);
 
-        return redirect('/panel');
+        // When React frontend is used (FRONTEND_URL set), send user to React panel; otherwise Laravel /panel
+        $panelUrl = config('frontend.url')
+            ? rtrim(config('frontend.url'), '/') . '/panel'
+            : $request->getSchemeAndHttpHost() . '/panel';
+
+        return redirect($panelUrl);
     }
 
     public function exportExcelOrganizations(Request $request)

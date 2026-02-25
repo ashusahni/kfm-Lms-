@@ -29,6 +29,6 @@ class PanelAuthenticate
             return $next($request);
         }
 
-        return redirect('/login');
+        return redirect(frontend_url('/login'));
     }
 }

@@ -293,6 +293,8 @@ export interface DashboardQuickInfo {
   reserveMeetingsCount?: number;
   supportsCount?: number;
   commentsCount?: number;
+  balance?: number;
+  badges?: { next_badge?: string; percent?: number; earned?: string };
   [key: string]: unknown;
 }
 

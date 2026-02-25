@@ -267,7 +267,7 @@ class RegisterController extends Controller
                 session()->put('referralCode', $referralCode);
             }
 
-            return redirect('/verification');
+            return redirect(frontend_url('/verify'));
         } elseif ($checkConfirmed['status'] == 'verified') {
             $this->guard()->login($user);
 

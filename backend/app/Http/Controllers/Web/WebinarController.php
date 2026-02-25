@@ -675,7 +675,7 @@ class WebinarController extends Controller
 
             abort(404);
         } else {
-            return redirect('/login');
+            return redirect(frontend_url('/login'));
         }
     }
 
@@ -825,7 +825,7 @@ class WebinarController extends Controller
 
             abort(404);
         } else {
-            return redirect('/login');
+            return redirect(frontend_url('/login'));
         }
     }
 

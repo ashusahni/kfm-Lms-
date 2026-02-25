@@ -39,7 +39,7 @@ class VerificationController extends Controller
             }
         }
 
-        return redirect('/login');
+        return redirect(frontend_url('/login'));
     }
 
     public function resendCode()
@@ -58,11 +58,11 @@ class VerificationController extends Controller
                     $verification->sendEmailCode();
                 }
 
-                return redirect('/verification');
+                return redirect(frontend_url('/verify'));
             }
         }
 
-        return redirect('/login');
+        return redirect(frontend_url('/login'));
     }
 
     public function checkConfirmed($user = null, $username, $value)

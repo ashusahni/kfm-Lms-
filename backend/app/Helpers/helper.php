@@ -1511,6 +1511,24 @@ function getAdminPanelUrl($url = null, $withFirstSlash = true)
     return ($withFirstSlash ? '/' : '') . getAdminPanelUrlPrefix() . ($url ?? '');
 }
 
+/**
+ * URL for the main site (React frontend when FRONTEND_URL is set, otherwise Laravel app).
+ * Use for links/redirects to home, login, register, etc. so Laravel panel/admin and React stay in sync.
+ *
+ * @param string $path Path on the main site (e.g. '/', '/login', '/register'). No leading slash is ok.
+ * @return string Full URL to the main site (React base + path, or Laravel url($path) when FRONTEND_URL is not set)
+ */
+function frontend_url($path = '')
+{
+    $base = config('frontend.url');
+    if (!empty($base)) {
+        $base = rtrim($base, '/');
+        $path = ltrim($path, '/');
+        return $path === '' ? $base : $base . '/' . $path;
+    }
+    return url($path ?: '/');
+}
+
 function getAdvertisingModalSettings()
 {
     $cookieKey = 'show_advertise_modal';

@@ -11,6 +11,7 @@ const API_BASE =
     : "";
 
 const AUTH_TOKEN_KEY = "rocket_lms_token";
+const AUTH_ROLE_KEY = "rocket_lms_role";
 
 export const getApiBase = () => API_BASE;
 
@@ -21,6 +22,15 @@ export function getAuthToken(): string | null {
 export function setAuthToken(token: string | null): void {
   if (token === null) localStorage.removeItem(AUTH_TOKEN_KEY);
   else localStorage.setItem(AUTH_TOKEN_KEY, token);
+}
+
+export function getAuthRole(): string | null {
+  return localStorage.getItem(AUTH_ROLE_KEY);
+}
+
+export function setAuthRole(role: string | null): void {
+  if (role === null) localStorage.removeItem(AUTH_ROLE_KEY);
+  else localStorage.setItem(AUTH_ROLE_KEY, role);
 }
 
 /**

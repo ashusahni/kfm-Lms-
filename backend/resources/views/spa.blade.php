@@ -1,3 +1,9 @@
+@php
+$spaPath = public_path('spa/index.html');
+@endphp
+@if(config('frontend.serve_react', false) && file_exists($spaPath))
+{!! file_get_contents($spaPath) !!}
+@else
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -11,3 +17,4 @@
     <script type="module" src="{{ asset('spa/assets/main.js') }}"></script>
 </body>
 </html>
+@endif

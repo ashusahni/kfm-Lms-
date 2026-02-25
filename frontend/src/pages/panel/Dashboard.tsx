@@ -11,6 +11,10 @@ import {
   AlertCircle,
   Calendar,
   MessageSquare,
+  Wallet,
+  Headphones,
+  MessageCircle,
+  Award,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -59,11 +63,17 @@ function useDashboardData() {
     else break;
   }
 
+  const eventCount = quickInfo.data?.unread_notifications?.count ?? 0;
   return {
     quickInfo: quickInfo.data,
     quickInfoLoading: quickInfo.isLoading,
     activeProgramsCount: quickInfo.data?.webinarsCount ?? 0,
     reserveMeetingsCount: quickInfo.data?.reserveMeetingsCount ?? 0,
+    balance: quickInfo.data?.balance ?? 0,
+    supportsCount: quickInfo.data?.supportsCount ?? 0,
+    commentsCount: quickInfo.data?.commentsCount ?? 0,
+    badges: quickInfo.data?.badges,
+    eventCount,
     todayLog,
     todayStr,
     adherence7,
@@ -73,9 +83,14 @@ function useDashboardData() {
   };
 }
 
+function formatBalance(value: number, currencySign = "₹") {
+  return `${currencySign}${Number(value).toLocaleString("en-IN", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+}
+
 export default function Dashboard() {
-  const { t } = useConfig();
+  const { t, appConfig } = useConfig();
   const {
+    quickInfo,
     quickInfoLoading,
     activeProgramsCount,
     todayLog,
@@ -83,23 +98,66 @@ export default function Dashboard() {
     streak,
     todayStr,
     reserveMeetingsCount,
+    balance,
+    supportsCount,
+    commentsCount,
+    badges,
+    eventCount,
     assignments,
     assignmentsLoading,
   } = useDashboardData();
 
   const todayChallenge = assignments[0];
+  const currencySign = appConfig?.currency?.sign ?? "₹";
+  const badgePercent = badges?.percent ?? 0;
+  const nextBadge = badges?.next_badge ?? "New User";
 
   return (
     <>
-      <motion.h1
+      <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-2xl font-display font-bold text-foreground mb-8"
+        className="mb-8"
       >
-        Dashboard
-      </motion.h1>
+        <h1 className="text-2xl font-display font-bold text-foreground mb-1">
+          Dashboard
+        </h1>
+        <p className="text-muted-foreground">
+          Hi, {quickInfo?.full_name ?? "there"} — You have {eventCount} new event{eventCount !== 1 ? "s" : ""}.
+        </p>
+        {eventCount > 0 && (
+          <Link to="/panel/notifications" className="text-sm text-primary font-medium mt-1 inline-block hover:underline">
+            View all events
+          </Link>
+        )}
+      </motion.div>
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.02 }}
+        >
+          <Card className="border border-border h-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium flex items-center gap-2">
+                <Wallet size={18} className="text-primary" />
+                Account Balance
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {quickInfoLoading ? (
+                <Skeleton className="h-10 w-20 rounded" />
+              ) : (
+                <p className="text-2xl font-bold text-foreground">
+                  {formatBalance(balance, currencySign)}
+                </p>
+              )}
+              <span className="text-sm text-muted-foreground mt-1 block">Manage in Financial</span>
+            </CardContent>
+          </Card>
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -110,7 +168,7 @@ export default function Dashboard() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-base font-medium flex items-center gap-2">
                   <BookOpen size={18} className="text-primary" />
-                  Active {t("courses")}
+                  Purchased {t("courses")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -127,6 +185,28 @@ export default function Dashboard() {
               </CardContent>
             </Card>
           </Link>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.07 }}
+        >
+          <Card className="border border-border h-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium flex items-center gap-2">
+                <Headphones size={18} className="text-primary" />
+                Support Messages
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {quickInfoLoading ? (
+                <Skeleton className="h-10 w-12 rounded" />
+              ) : (
+                <p className="text-2xl font-bold text-foreground">{supportsCount}</p>
+              )}
+            </CardContent>
+          </Card>
         </motion.div>
 
         <motion.div
@@ -263,6 +343,60 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.22 }}
+        >
+          <Card className="border border-border h-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium flex items-center gap-2">
+                <MessageCircle size={18} className="text-primary" />
+                Comments
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {quickInfoLoading ? (
+                <Skeleton className="h-10 w-12 rounded" />
+              ) : (
+                <p className="text-2xl font-bold text-foreground">{commentsCount}</p>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+        >
+          <Card className="border border-border h-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium flex items-center gap-2">
+                <Award size={18} className="text-primary" />
+                Next Badge
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {quickInfoLoading ? (
+                <Skeleton className="h-16 w-full rounded" />
+              ) : (
+                <>
+                  <div className="flex items-center gap-4">
+                    <Progress value={badgePercent} className="h-3 flex-1" />
+                    <span className="text-xl font-bold text-foreground shrink-0">
+                      {badgePercent}%
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Next Badge: {nextBadge}
+                  </p>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
 
       <motion.div
@@ -274,7 +408,7 @@ export default function Dashboard() {
           <CardHeader>
             <CardTitle className="text-base font-medium flex items-center gap-2">
               <MessageSquare size={18} />
-              Recent Announcements
+              Noticeboard &amp; Announcements
             </CardTitle>
           </CardHeader>
           <CardContent>

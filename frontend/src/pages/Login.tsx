@@ -52,7 +52,7 @@ const Login = () => {
     });
     if (result.ok) {
       const from = (location.state as { from?: { pathname?: string } })?.from?.pathname;
-      navigate(from && from.startsWith("/panel") ? from : "/", { replace: true });
+      navigate(from && from.startsWith("/panel") ? from : "/panel", { replace: true });
     } else setError(result.message ?? "Login failed");
   };
 

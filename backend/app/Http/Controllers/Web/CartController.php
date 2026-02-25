@@ -87,7 +87,7 @@ class CartController extends Controller
             }
         }
 
-        return redirect('/');
+        return redirect(frontend_url('/'));
     }
 
     public function couponValidate(Request $request)

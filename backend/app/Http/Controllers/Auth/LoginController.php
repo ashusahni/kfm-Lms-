@@ -120,7 +120,7 @@ class LoginController extends Controller
             ]);
         }
 
-        return redirect('/');
+        return redirect(frontend_url('/'));
     }
 
     public function username()
@@ -196,7 +196,7 @@ class LoginController extends Controller
             'status' => 'error'
         ];
 
-        return redirect('/login')->with(['toast' => $toastData]);
+        return redirect(frontend_url('/login'))->with(['toast' => $toastData]);
     }
 
     protected function sendMaximumActiveSessionResponse()
@@ -207,7 +207,7 @@ class LoginController extends Controller
             'status' => 'error'
         ];
 
-        return redirect('/login')->with(['login_failed_active_session' => $toastData]);
+        return redirect(frontend_url('/login'))->with(['login_failed_active_session' => $toastData]);
     }
 
     public function afterLogged(Request $request, $verify = false)
@@ -241,7 +241,7 @@ class LoginController extends Controller
             $checkConfirmed = $verificationController->checkConfirmed($user, $this->username(), $request->get('username'));
 
             if ($checkConfirmed['status'] == 'send') {
-                return redirect('/verification');
+                return redirect(frontend_url('/verify'));
             }
         } elseif ($verify) {
             session()->forget('verificationId');

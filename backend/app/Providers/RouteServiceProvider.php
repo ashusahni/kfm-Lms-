@@ -50,7 +50,10 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapAdminRoutes();
 
-        $this->mapPanelRoutes();
+        // When React is served from Laravel (single URL), do not register Laravel panel routes so /panel serves the React app
+        if (!config('frontend.serve_react', false)) {
+            $this->mapPanelRoutes();
+        }
 
         //
     }

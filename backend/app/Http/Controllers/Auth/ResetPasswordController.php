@@ -69,7 +69,7 @@ class ResetPasswordController extends Controller
                 'msg' => trans('auth.reset_password_success'),
                 'status' => 'success'
             ];
-            return redirect('/login')->with(['toast' => $toastData]);
+            return redirect(frontend_url('/login'))->with(['toast' => $toastData]);
         }
 
         $toastData = [

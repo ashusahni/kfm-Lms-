@@ -7,8 +7,11 @@ import { componentTagger } from "lovable-tagger";
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const apiUrl = env.VITE_API_URL || "http://localhost:8000";
+  // When building for Laravel backend (SERVE_REACT_FROM_BACKEND), assets must be under /spa/
+  const base = env.VITE_APP_BASE || "/";
 
   return {
+    base,
     server: {
       host: "::",
       port: 8080, // Frontend dev server – open http://localhost:8080 (backend API runs on 8000)

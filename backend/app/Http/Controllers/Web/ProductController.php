@@ -378,7 +378,7 @@ class ProductController extends Controller
 
             abort(404);
         } else {
-            return redirect('/login');
+            return redirect(frontend_url('/login'));
         }
     }
 

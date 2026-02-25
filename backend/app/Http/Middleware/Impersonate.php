@@ -17,7 +17,8 @@ class Impersonate
     public function handle($request, Closure $next)
     {
         if (session()->has('impersonated')) {
-            Auth::onceUsingId(session()->get('impersonated'));
+            // Use web guard explicitly so the panel and views see the impersonated user
+            Auth::guard('web')->onceUsingId(session()->get('impersonated'));
         }
 
         return $next($request);

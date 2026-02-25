@@ -18,7 +18,7 @@
     <div class="<?php echo e((!empty($isPanel) and $isPanel) ? 'container-fluid' : 'container'); ?>">
         <div class="navbar-modern-inner">
 
-            <a class="navbar-brand-modern navbar-order <?php echo e((empty($navBtnUrl) and empty($navBtnText)) ? 'ml-auto' : ''); ?>" href="/">
+            <a class="navbar-brand-modern navbar-order <?php echo e((empty($navBtnUrl) and empty($navBtnText)) ? 'ml-auto' : ''); ?>" href="<?php echo e(frontend_url('/')); ?>">
                 <?php if(!empty($generalSettings['logo'])): ?>
                     <img src="<?php echo e($generalSettings['logo']); ?>" class="img-cover" alt="site logo">
                 <?php else: ?>
@@ -50,7 +50,7 @@
                                         <ul class="cat-dropdown-menu">
                                             <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <li>
-                                                    <a href="<?php echo e($category->getUrl()); ?>" class="<?php echo e((!empty($category->subCategories) and count($category->subCategories)) ? 'js-has-subcategory' : ''); ?>">
+                                                    <a href="<?php echo e(frontend_url($category->getUrl())); ?>" class="<?php echo e((!empty($category->subCategories) and count($category->subCategories)) ? 'js-has-subcategory' : ''); ?>">
                                                         <div class="d-flex align-items-center">
                                                             <img src="<?php echo e($category->icon); ?>" class="cat-dropdown-menu-icon mr-10" alt="<?php echo e($category->title); ?> icon">
                                                             <?php echo e($category->title); ?>
@@ -67,7 +67,7 @@
                                                         <ul class="sub-menu" data-simplebar <?php if((!empty($isRtl) and $isRtl)): ?> data-simplebar-direction="rtl" <?php endif; ?>>
                                                             <?php $__currentLoopData = $category->subCategories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $subCategory): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                                 <li>
-                                                                    <a href="<?php echo e($subCategory->getUrl()); ?>">
+                                                                    <a href="<?php echo e(frontend_url($subCategory->getUrl())); ?>">
                                                                         <?php if(!empty($subCategory->icon)): ?>
                                                                             <img src="<?php echo e($subCategory->icon); ?>" class="cat-dropdown-menu-icon mr-10" alt="<?php echo e($subCategory->title); ?> icon">
                                                                         <?php endif; ?>
@@ -90,8 +90,14 @@
 
                     <?php if(!empty($navbarPages) and count($navbarPages)): ?>
                         <?php $__currentLoopData = $navbarPages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $navbarPage): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php
+                                $pageLink = $navbarPage['link'];
+                                if (strpos($pageLink, '/') === 0 && !str_starts_with($pageLink, '/panel') && !str_starts_with($pageLink, getAdminPanelUrlPrefix())) {
+                                    $pageLink = frontend_url($pageLink);
+                                }
+                            ?>
                             <li class="nav-item">
-                                <a class="nav-link-modern" href="<?php echo e($navbarPage['link']); ?>"><?php echo e($navbarPage['title']); ?></a>
+                                <a class="nav-link-modern" href="<?php echo e($pageLink); ?>"><?php echo e($navbarPage['title']); ?></a>
                             </li>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <?php endif; ?>
@@ -100,11 +106,16 @@
 
             <div class="nav-actions navbar-order d-flex align-items-center">
                 <?php if(!empty($navBtnUrl)): ?>
-                    <a href="<?php echo e($navBtnUrl); ?>" class="btn-nav-cta d-none d-lg-inline-flex">
+                    <?php
+                        $mainSiteUrl = (strpos($navBtnUrl, '/') === 0 && !str_starts_with($navBtnUrl, '/panel') && !str_starts_with($navBtnUrl, getAdminPanelUrlPrefix()))
+                            ? frontend_url($navBtnUrl)
+                            : $navBtnUrl;
+                    ?>
+                    <a href="<?php echo e($mainSiteUrl); ?>" class="btn-nav-cta d-none d-lg-inline-flex">
                         <?php echo e($navBtnText); ?>
 
                     </a>
-                    <a href="<?php echo e($navBtnUrl); ?>" class="nav-link-modern d-flex d-lg-none">
+                    <a href="<?php echo e($mainSiteUrl); ?>" class="nav-link-modern d-flex d-lg-none">
                         <?php echo e($navBtnText); ?>
 
                     </a>

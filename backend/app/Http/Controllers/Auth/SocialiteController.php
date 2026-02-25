@@ -67,7 +67,7 @@ class SocialiteController extends Controller
 
             Auth::login($user);
 
-            return redirect('/');
+            return redirect(frontend_url('/'));
         } catch (Exception $e) {
             $toastData = [
                 'title' => trans('public.request_failed'),
@@ -126,7 +126,7 @@ class SocialiteController extends Controller
             }
 
             Auth::login($user);
-            return redirect('/');
+            return redirect(frontend_url('/'));
         } catch (Exception $e) {
             $toastData = [
                 'title' => trans('public.request_failed'),
@@ -163,7 +163,7 @@ class SocialiteController extends Controller
             'status' => 'error'
         ];
 
-        return redirect('/login')->with(['login_failed_active_session' => $toastData]);
+        return redirect(frontend_url('/login'))->with(['login_failed_active_session' => $toastData]);
     }
 
 }

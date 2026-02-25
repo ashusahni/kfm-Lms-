@@ -10,7 +10,7 @@ class MobileAppController extends Controller
     public function index()
     {
         /*if (empty(getFeaturesSettings('mobile_app_status')) or !getFeaturesSettings('mobile_app_status')) {
-            return redirect('/');
+            return redirect(frontend_url('/'));
         }*/
 
 

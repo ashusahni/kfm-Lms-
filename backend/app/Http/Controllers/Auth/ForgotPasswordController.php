@@ -82,7 +82,7 @@ class ForgotPasswordController extends Controller
                 'status' => 'success'
             ];
 
-            return redirect('/login')->with(['toast' => $toastData]);
+            return redirect(frontend_url('/login'))->with(['toast' => $toastData]);
         }
 
         return back()->withInput($request->all())->withErrors([

@@ -18,7 +18,7 @@
     <div class="{{ (!empty($isPanel) and $isPanel) ? 'container-fluid' : 'container'}}">
         <div class="navbar-modern-inner">
 
-            <a class="navbar-brand-modern navbar-order {{ (empty($navBtnUrl) and empty($navBtnText)) ? 'ml-auto' : '' }}" href="/">
+            <a class="navbar-brand-modern navbar-order {{ (empty($navBtnUrl) and empty($navBtnText)) ? 'ml-auto' : '' }}" href="{{ frontend_url('/') }}">
                 @if(!empty($generalSettings['logo']))
                     <img src="{{ $generalSettings['logo'] }}" class="img-cover" alt="site logo">
                 @else
@@ -49,7 +49,7 @@
                                         <ul class="cat-dropdown-menu">
                                             @foreach($categories as $category)
                                                 <li>
-                                                    <a href="{{ $category->getUrl() }}" class="{{ (!empty($category->subCategories) and count($category->subCategories)) ? 'js-has-subcategory' : '' }}">
+                                                    <a href="{{ frontend_url($category->getUrl()) }}" class="{{ (!empty($category->subCategories) and count($category->subCategories)) ? 'js-has-subcategory' : '' }}">
                                                         <div class="d-flex align-items-center">
                                                             <img src="{{ $category->icon }}" class="cat-dropdown-menu-icon mr-10" alt="{{ $category->title }} icon">
                                                             {{ $category->title }}
@@ -65,7 +65,7 @@
                                                         <ul class="sub-menu" data-simplebar @if((!empty($isRtl) and $isRtl)) data-simplebar-direction="rtl" @endif>
                                                             @foreach($category->subCategories as $subCategory)
                                                                 <li>
-                                                                    <a href="{{ $subCategory->getUrl() }}">
+                                                                    <a href="{{ frontend_url($subCategory->getUrl()) }}">
                                                                         @if(!empty($subCategory->icon))
                                                                             <img src="{{ $subCategory->icon }}" class="cat-dropdown-menu-icon mr-10" alt="{{ $subCategory->title }} icon">
                                                                         @endif
@@ -87,8 +87,14 @@
 
                     @if(!empty($navbarPages) and count($navbarPages))
                         @foreach($navbarPages as $navbarPage)
+                            @php
+                                $pageLink = $navbarPage['link'];
+                                if (strpos($pageLink, '/') === 0 && !str_starts_with($pageLink, '/panel') && !str_starts_with($pageLink, getAdminPanelUrlPrefix())) {
+                                    $pageLink = frontend_url($pageLink);
+                                }
+                            @endphp
                             <li class="nav-item">
-                                <a class="nav-link-modern" href="{{ $navbarPage['link'] }}">{{ $navbarPage['title'] }}</a>
+                                <a class="nav-link-modern" href="{{ $pageLink }}">{{ $navbarPage['title'] }}</a>
                             </li>
                         @endforeach
                     @endif
@@ -97,10 +103,15 @@
 
             <div class="nav-actions navbar-order d-flex align-items-center">
                 @if(!empty($navBtnUrl))
-                    <a href="{{ $navBtnUrl }}" class="btn-nav-cta d-none d-lg-inline-flex">
+                    @php
+                        $mainSiteUrl = (strpos($navBtnUrl, '/') === 0 && !str_starts_with($navBtnUrl, '/panel') && !str_starts_with($navBtnUrl, getAdminPanelUrlPrefix()))
+                            ? frontend_url($navBtnUrl)
+                            : $navBtnUrl;
+                    @endphp
+                    <a href="{{ $mainSiteUrl }}" class="btn-nav-cta d-none d-lg-inline-flex">
                         {{ $navBtnText }}
                     </a>
-                    <a href="{{ $navBtnUrl }}" class="nav-link-modern d-flex d-lg-none">
+                    <a href="{{ $mainSiteUrl }}" class="nav-link-modern d-flex d-lg-none">
                         {{ $navBtnText }}
                     </a>
                 @endif
