@@ -1,0 +1,7 @@
+# ============================================================
+# VERCEL — Add in Project → Settings → Environment Variables.
+# One line per variable (Key = left of =, Value = right).
+# ============================================================
+
+VITE_API_URL=https://YOUR-RENDER-SERVICE.onrender.com
+VITE_API_KEY=1234

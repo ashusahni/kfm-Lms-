@@ -1,0 +1,39 @@
+# Dependencies (composer install runs in Docker)
+/vendor
+/node_modules
+
+# Git and IDE
+.git
+.gitignore
+.idea
+.vscode
+*.swp
+*.swo
+
+# Env (set on Render, do not bake in)
+.env
+.env.*
+!.env.example
+
+# Logs and cache (runtime-generated)
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+!storage/logs/.gitkeep
+!storage/framework/cache/.gitkeep
+!storage/framework/sessions/.gitkeep
+!storage/framework/views/.gitkeep
+
+# Debug and test
+storage/debugbar
+.phpunit.result.cache
+phpunit.xml
+tests
+
+# Docs (optional to exclude)
+*.md
+!README.md
+
+# Frontend (not needed for backend container)
+../frontend
