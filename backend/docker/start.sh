@@ -6,7 +6,7 @@ PORT="${PORT:-8080}"
 export PORT
 
 # Replace __PORT__ in nginx config with Render's PORT
-sed -i "s/__PORT__/$PORT/g" /etc/nginx/conf.d/default.conf
+sed -i "s/__PORT__/$PORT/g" /etc/nginx/nginx.conf
 
 # Laravel: run migrations and caches on each deploy
 cd /var/www/html

@@ -33,9 +33,8 @@ RUN apk add --no-cache \
     gd \
     opcache
 
-# Nginx config
-RUN mkdir -p /etc/nginx/conf.d
-COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+# Nginx config (full config so "server" is inside http { })
+COPY docker/nginx.conf /etc/nginx/nginx.conf
 # App
 WORKDIR /var/www/html
 COPY --from=composer /app .
