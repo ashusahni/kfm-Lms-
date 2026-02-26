@@ -78,7 +78,7 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
 
     // When React is served from this backend (SERVE_REACT_FROM_BACKEND=true), serve the SPA for any unmatched GET that is not admin/api
     if (config('frontend.serve_react', false)) {
-        Route::get('{path?}', 'Web\SpaController')
+        Route::get('{path?}', 'SpaController')
             ->where('path', '^(?!admin$|admin/|api$|api/|my_api|api_sessions|emergencyDatabaseUpdate|mobile-app|maintenance).*')
             ->defaults('path', '')
             ->name('spa.catchall');

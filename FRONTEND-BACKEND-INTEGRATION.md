@@ -40,7 +40,8 @@ VITE_API_KEY=1234
 ```
 
 - **Development**: Leave `VITE_API_URL` empty. The Vite dev server proxies `/api` to `http://localhost:8000`, so the browser still sees same-origin requests.
-- **Production**: Set `VITE_API_URL` to your backend root, e.g. `https://lms.example.com` (no trailing slash). The built React app will call this URL for all API requests.
+- **Production (React on same URL as backend)**: When using `SERVE_REACT_FROM_BACKEND=true`, leave `VITE_API_URL` empty so the built app uses same-origin `/api/*` requests.
+- **Production (React on a different domain)**: Set `VITE_API_URL` to your backend root, e.g. `https://lms.example.com` (no trailing slash).
 
 ## 2. Serve React from Laravel (single URL – no separate frontend server)
 
@@ -129,8 +130,9 @@ Backend `config/cors.php` uses `config('frontend.url')` when set:
 
 ## 8. Summary checklist
 
-- [ ] Backend `.env`: `API_KEY` set; `APP_URL` correct for environment.
-- [ ] Frontend `.env`: `VITE_API_KEY` matches backend; `VITE_API_URL` empty in dev, set to backend URL in prod.
+- [ ] Backend `.env`: `API_KEY` set; `APP_URL` correct for environment (e.g. `http://127.0.0.1:8000` for local).
+- [ ] Frontend `.env`: `VITE_API_KEY` matches backend; `VITE_API_URL` empty when served from backend or using dev proxy; set to backend URL only when React is on a different domain.
+- [ ] When `SERVE_REACT_FROM_BACKEND=true`: `backend/public/spa/index.html` and `backend/public/spa/assets/*` must exist (copy from `frontend/dist/` after `npm run build:laravel`).
 - [ ] In dev: backend on 8000, frontend on 8080; proxy forwards `/api` to backend.
 - [ ] React login stores JWT; all panel API calls send `Authorization: Bearer <token>` and `x-api-key`.
-- [ ] Admin and optional Blade student panel stay on Laravel; student experience in production is the React app + Laravel API.
+- [ ] Admin stays on Laravel; student experience is the React app + Laravel API (`/api/development/*`).

@@ -8,6 +8,7 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "build:laravel": "cross-env VITE_APP_BASE=/spa/ vite build",
+    "deploy:backend": "npm run build:laravel && node -e \"require('fs').cpSync('dist', require('path').join(__dirname, '../backend/public/spa'), { recursive: true })\"",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",

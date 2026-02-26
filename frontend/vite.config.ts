@@ -8,7 +8,9 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const apiUrl = env.VITE_API_URL || "http://localhost:8000";
   // When building for Laravel backend (SERVE_REACT_FROM_BACKEND), assets must be under /spa/
-  const base = env.VITE_APP_BASE || "/";
+  // Laravel build: use /spa/ so assets load from backend/public/spa/. Avoid Windows path quirks (e.g. Git Bash).
+  const wantSpa = env.VITE_APP_BASE != null && String(env.VITE_APP_BASE).toLowerCase().replace(/\\/g, "/").includes("spa");
+  const base = wantSpa ? "/spa/" : (env.VITE_APP_BASE && env.VITE_APP_BASE.startsWith("/") ? env.VITE_APP_BASE : "/");
 
   return {
     base,
