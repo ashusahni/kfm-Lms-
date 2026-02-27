@@ -17,7 +17,7 @@ const Footer = () => {
               </span>
             </div>
             <p className="text-sm leading-relaxed text-primary-foreground/60 max-w-xs">
-              Transforming health across Karnataka through structured coaching and measurable results.
+              Transforming health across Karnataka through structured coaching and measurable resultss.
             </p>
           </div>
 
