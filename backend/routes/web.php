@@ -12,6 +12,25 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+/* Lightweight health check (no DB). Use to verify backend is up. */
+Route::get('/up', function () {
+    return response()->json(['status' => 'ok', 'service' => 'backend'], 200);
+});
+
+/* Root "/" without any middleware that touches DB, so it works even when DB is empty or unreachable. */
+Route::get('/', function () {
+    $url = config('frontend.url');
+    if (!empty($url) && !config('frontend.serve_react', false)) {
+        return redirect()->away(rtrim($url, '/') . '/');
+    }
+    return response()->json([
+        'ok' => true,
+        'message' => 'Backend is running. Set FRONTEND_URL in env to redirect the app to your frontend.',
+        'api' => url('/api/development'),
+    ], 200);
+})->middleware([]);
+
 Route::group(['prefix' => 'my_api', 'namespace' => 'Api\Panel', 'middleware' => 'signed', 'as' => 'my_api.web.'], function () {
     Route::get('checkout/{user}', 'CartController@webCheckoutRender')->name('checkout');
     Route::get('/charge/{user}', 'PaymentsController@webChargeRender')->name('charge');

@@ -363,6 +363,70 @@ After Option A or B, your frontend will show the same content you had in your or
 
 ---
 
+## Backend URL not working — is it because of the database?
+
+Yes. The app was developed and tested with a **local MySQL** database that had data (e.g. from KFM.sql). On Render you switched to **PostgreSQL** and used **migrations only**, so:
+
+1. **The database is empty** — no courses, users, or settings. The backend **does not** depend on your machine; it depends on **whatever database you point it to** (Render Postgres). So “everything was dependent on local database” really means: the **data** you had was in MySQL. On Render, that data is not there.
+2. **Backend “not working”** can be two different things:
+   - **Backend is down or crashing (502 / 500):** Then the **URL** itself won’t work. That’s usually env, DB connection, or a PHP error — not “empty DB”.
+   - **Backend responds but frontend shows no content / errors:** Then the backend **is** working; you’re just seeing empty results or a specific route failing (e.g. MySQL-only SQL on Postgres).
+
+### Step 1 — See what’s actually failing
+
+1. **Check Render logs**  
+   Render Dashboard → your **backend** Web Service → **Logs**.  
+   Look for:
+   - **Build/deploy:** errors during `docker build` or `php artisan migrate` / `config:cache`.
+   - **Runtime:** PHP errors, “connection refused”, “could not connect to database”, or stack traces when you call the API.
+
+2. **Test the backend URL directly (no frontend)**  
+   In a browser or with curl:
+
+   - **Simple test:**  
+     `https://rocket-lms-backend.onrender.com/api/development/`  
+     (replace with your real Render backend URL.)  
+     You should see something like `"api test"` or a short JSON response.  
+     - If this **does not load** or you get **502/503**: the app or web server isn’t starting correctly → use **Logs** (above) to find the error.
+     - If this **loads**: the backend is running; the problem is likely CORS, API key, or a **specific route** (e.g. `/api/development/courses`).
+
+   - **Courses (guest) API:**  
+     `https://rocket-lms-backend.onrender.com/api/development/courses`  
+     (Add header `x-api-key: YOUR_API_KEY` if the API requires it.)  
+     - If this returns **200** with `{"data":[]}` or similar: backend and DB are fine; the list is empty because the DB has no rows.
+     - If this returns **500**: check Logs for the exception; some code path may use MySQL-only SQL or assume data exists.
+
+3. **Confirm env (no local dependency)**  
+   The backend does **not** read your local `.env` on Render. It uses **only** the variables you set in Render → **Environment**.  
+   - `APP_KEY`, `JWT_SECRET`, `API_KEY` must be set.  
+   - `DB_CONNECTION=pgsql` and `DATABASE_URL` = **Internal** PostgreSQL URL from Render.  
+   - `FRONTEND_URL` = your Vercel URL (for CORS).  
+
+   If any of these are missing or wrong, the backend can fail to start or to connect to the DB.
+
+### Step 2 — Fix according to what you see
+
+| What you see | What to do |
+|--------------|------------|
+| **502 / 503 / “Application failed to respond”** | Logs will show the cause. Typical: missing `APP_KEY` or `JWT_SECRET`, wrong `DATABASE_URL`, or migrations failing. Fix env, then **Redeploy**. |
+| **Database connection error in logs** | Fix `DATABASE_URL` (Internal URL, same region as the backend) and `DB_CONNECTION=pgsql`. Redeploy. |
+| **`/api/development/` works but `/api/development/courses` returns 500** | Some controller/query may use MySQL-only syntax (e.g. raw SQL with backticks). Check Logs for the exact error; that file/query needs to be made PostgreSQL-compatible or you use MySQL elsewhere (see below). |
+| **200 with empty data** | Backend and DB are fine. To see content, you must **put data in the Render database**: either use the app (create courses/users) or import data (e.g. convert KFM.sql to PostgreSQL and import, or use MySQL elsewhere and point Render to it). |
+
+### Step 3 — Getting your old data to production
+
+The backend **code** is not tied to your local DB; only the **data** was there. To have that data on Render you have two options:
+
+- **Option A – Use MySQL elsewhere**  
+  Create a MySQL database (e.g. Railway, PlanetScale), import **KFM.sql** there, then on Render set `DB_CONNECTION=mysql` and `DATABASE_URL` (or `DB_HOST`, etc.) to that MySQL. Redeploy. The backend will then use that MySQL and your existing data.
+
+- **Option B – Use Render PostgreSQL**  
+  Convert **KFM.sql** to PostgreSQL (e.g. pgloader or a conversion script), import into your Render PostgreSQL instance. Keep `DB_CONNECTION=pgsql` and `DATABASE_URL`. Redeploy if needed.
+
+After that, the backend URL will still be the same; it will just read from the database you configured (MySQL or Postgres with imported data).
+
+---
+
 ## What env to use when deploying on Render
 
 **You do not upload any .env file.** Render expects environment variables to be set in the dashboard:
@@ -391,6 +455,7 @@ After Option A or B, your frontend will show the same content you had in your or
 | Issue | What to check |
 |-------|----------------|
 | **502 / Backend not loading** | Render logs (Logs tab). Ensure Docker build and `start.sh` finish without errors; migrations run on boot. |
+| **500 on backend URL** | The root `/` used to run middleware that queries the DB (settings, categories); if the DB is empty or unreachable, that caused 500. A lightweight root route is now used so `/` redirects to `FRONTEND_URL` or returns JSON without touching the DB. **Check:** Open `https://your-backend.onrender.com/up` — if you see `{"status":"ok"}`, the app is running; then try `/` and `/api/development/`. If `/up` also returns 500, check Render **Logs** for the exception (often missing `APP_KEY`, wrong `DATABASE_URL`, or DB not in same region). |
 | **Database connection error** | **PostgreSQL:** `DATABASE_URL` is the **Internal** URL; `DB_CONNECTION=pgsql`; database is in same region and **Available**. **External MySQL:** `DB_CONNECTION=mysql`; host allows inbound from Render; `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` (or `DATABASE_URL`) set correctly. |
 | **CORS / “blocked by CORS”** | Backend `FRONTEND_URL` = exact frontend origin (e.g. `https://your-app.vercel.app`), no trailing slash; redeploy backend. |
 | **API 401 / “wrong API key”** | `API_KEY` (backend) and `VITE_API_KEY` (frontend) must be identical. |
