@@ -33,7 +33,7 @@ It was created with MySQL 8 (e.g. `mysqldump`), so the syntax is **MySQL-specifi
 ## Simplest deployment (recommended)
 
 1. **Database:** Create a **PostgreSQL** database on Render (Part 1). Do **not** import KFM.sql here — it's MySQL-only. Laravel will create tables from **migrations** on first deploy.
-2. **Backend:** Create a **Web Service** on Render from this repo, Root Directory `backend`, Runtime **Docker**. Set env: `DB_CONNECTION=pgsql`, `DATABASE_URL=<Internal URL from step 1>`, plus `APP_KEY`, `JWT_SECRET`, `API_KEY`, `APP_URL`, `FRONTEND_URL`, `SERVE_REACT_FROM_BACKEND=false` (Part 2).
+2. **Backend:** Create a **Web Service** on Render from this repo, Root Directory `backend`, Runtime **Docker**. In **Environment**, add (you do **not** upload a file — use **`backend/.env.render.example`** as the list of keys): `DB_CONNECTION=pgsql`, `DATABASE_URL=<Internal URL from step 1>`, plus `APP_KEY`, `JWT_SECRET`, `API_KEY`, `APP_URL`, `FRONTEND_URL`, `SERVE_REACT_FROM_BACKEND=false` (Part 2).
 3. **Frontend:** Create a project on **Vercel** from the same repo, Root Directory `frontend`. Set `VITE_API_URL` = your Render backend URL and `VITE_API_KEY` = same as backend `API_KEY` (Part 3).
 4. Set backend `FRONTEND_URL` to your Vercel URL and redeploy the backend.
 
@@ -108,7 +108,8 @@ The backend runs as a **Docker** web service and uses the PostgreSQL database fr
    - **Region:** Same as the database (e.g. Oregon).
    - **Branch:** e.g. `main`
    - **Root Directory:** `backend`  
-     (so Render uses the `backend` folder as the project root).
+     (so Render uses the `backend` folder as the project root).  
+     **Important:** Type exactly `backend` with **no spaces** before or after — a trailing space (e.g. `backend `) will cause "Root directory does not exist" and the deploy will fail.
    - **Runtime:** **Docker**.
    - **Dockerfile path:** `Dockerfile` (relative to Root Directory, so `backend/Dockerfile`).
 4. **Instance type:** Free or paid.
@@ -116,7 +117,9 @@ The backend runs as a **Docker** web service and uses the PostgreSQL database fr
 
 ### Step 2.2 – Environment variables (Backend)
 
-In the same Web Service → **Environment** tab, add these. Replace placeholders with your real values.
+**You do not upload an env file to Render.** Add each variable in the dashboard: **Web Service → Environment → Add environment variable.**
+
+Use **`backend/.env.render.example`** as your reference (it lists every key with placeholders). Copy the keys and paste your real values into Render.
 
 | Key | Value | Notes |
 |-----|--------|--------|
@@ -152,44 +155,200 @@ On each deploy, the container runs `php artisan migrate --force` and caches conf
 
 ---
 
-## Part 3: Frontend on Vercel (React)
+## Part 3: Frontend on Vercel (React) — detailed
 
-The frontend is a Vite + React app that talks to the backend API.
+The frontend is a Vite + React app that talks to the backend API. Follow these steps in order.
 
 ### Step 3.1 – Create Vercel project
 
-1. Go to [Vercel Dashboard](https://vercel.com/dashboard) → **Add New** → **Project**.
-2. **Import** the same Git repository.
-3. **Configure:**
-   - **Root Directory:** set to `frontend` (so Vercel builds only the frontend).
-   - **Framework Preset:** Vite (or leave auto-detected).
-   - **Build Command:** `npm run build`
-   - **Output Directory:** `dist`
-   - **Install Command:** `npm install`
-4. Before deploying, add environment variables (Step 3.2).
+1. **Open Vercel**
+   - Go to [https://vercel.com/dashboard](https://vercel.com/dashboard) and log in (or sign up with GitHub/GitLab/Bitbucket).
+
+2. **Import the repository**
+   - Click **Add New…** → **Project**.
+   - If your repo is not connected, click **Import Git Repository** and authorize Vercel for your GitHub/GitLab.
+   - Find your **rocket-lms** (or project) repo and click **Import** next to it.
+
+3. **Configure the project (important)**
+   Before clicking Deploy, set:
+   - **Project Name:** e.g. `rocket-lms` or `your-app-name` (this becomes part of the URL).
+   - **Root Directory:** Click **Edit** and set to **`frontend`**.  
+     This tells Vercel to build only the `frontend` folder, not the whole repo.
+   - **Framework Preset:** Should auto-detect as **Vite**. If not, choose **Vite**.
+   - **Build Command:** Leave as `npm run build` (or set explicitly).
+   - **Output Directory:** Set to **`dist`** (Vite’s default output).
+   - **Install Command:** Leave as `npm install`.
+
+4. **Do not click Deploy yet.** Add environment variables first (Step 3.2).
+
+---
 
 ### Step 3.2 – Environment variables (Frontend)
 
-In the Vercel project → **Settings** → **Environment Variables**, add:
+These variables are baked into the frontend at **build time**. If you change them later, you must **redeploy** the frontend.
 
-| Name | Value | Environment |
-|------|--------|-------------|
-| `VITE_API_URL` | `https://rocket-lms-backend.onrender.com` | Production (and Preview if you want). |
-| `VITE_API_KEY` | Same value as backend `API_KEY` (e.g. `your-secret-api-key-123`) | Production (and Preview if needed). |
+1. On the same **Configure Project** screen, find **Environment Variables** (or go to the project after creation → **Settings** → **Environment Variables**).
 
-Use your **actual** Render backend URL (no trailing slash).  
-The frontend sends `VITE_API_URL` for API calls and `VITE_API_KEY` as `x-api-key`; the backend expects the same value in `API_KEY`.
+2. Add **two** variables:
 
-### Step 3.3 – Deploy frontend
+   **Variable 1**
+   - **Name:** `VITE_API_URL`  
+   - **Value:** Your Render backend URL, **no trailing slash**.  
+     Example: `https://rocket-lms-backend.onrender.com`  
+     (Use the exact URL from your Render Web Service; get it from Render Dashboard → your service → top of the page.)
+   - **Environment:** Check **Production** (and **Preview** if you want preview deployments to use the same API).
 
-1. Click **Deploy**.  
-   Vercel will run `npm run build` and deploy the `dist` output.
-2. Note the Vercel URL (e.g. `https://your-app.vercel.app`).
-3. **Go back to Render** → backend service → **Environment**:
-   - Set `FRONTEND_URL` = `https://your-app.vercel.app` (no trailing slash).
-   - Redeploy the backend so CORS allows the frontend origin.
+   **Variable 2**
+   - **Name:** `VITE_API_KEY`  
+   - **Value:** The **exact same** string you set as `API_KEY` on the backend (Render).  
+     Example: `your-secret-api-key-123`  
+     The frontend sends this as the `x-api-key` header; the backend checks it against `API_KEY`. If they differ, API calls will return 401.
 
-Your frontend is now served from Vercel and uses the backend on Render.
+3. Click **Add** (or **Save**) for each variable.
+
+4. Then click **Deploy** to start the first build.
+
+---
+
+### Step 3.3 – Deploy and get the frontend URL
+
+1. After you click **Deploy**, Vercel will:
+   - Clone the repo, use the `frontend` folder, run `npm install`, then `npm run build`.
+   - Build time is usually 1–3 minutes.
+
+2. When the deploy finishes, you’ll see a **Congratulations** screen with your app URL.
+   - Example: `https://rocket-lms-xxxx.vercel.app` or `https://your-project-name.vercel.app`.
+   - **Copy this URL** (no trailing slash). You need it for Step 4.
+
+3. Open the URL in a browser to confirm the app loads.  
+   API calls will work only after you complete Step 4 (backend CORS).
+
+---
+
+### Step 3.4 – If you need to change frontend env later
+
+1. In Vercel Dashboard → your project → **Settings** → **Environment Variables**.
+2. Edit `VITE_API_URL` and/or `VITE_API_KEY` and save.
+3. Go to **Deployments** → open the **⋯** menu on the latest deployment → **Redeploy**.  
+   (Vite bakes env at build time, so a new deploy is required for changes to take effect.)
+
+---
+
+## Part 3 (continued): Step 4 – Connect frontend to backend (FRONTEND_URL + redeploy)
+
+After the frontend is live on Vercel, the **backend** must allow requests from the frontend origin (CORS). You do that by setting `FRONTEND_URL` on Render and redeploying.
+
+### Step 4.1 – Set FRONTEND_URL on Render
+
+1. **Open Render**
+   - Go to [https://dashboard.render.com](https://dashboard.render.com).
+   - Click your **Web Service** (the backend, e.g. `rocket-lms-backend`).
+
+2. **Open Environment**
+   - In the left sidebar, click **Environment** (or the **Environment** tab).
+
+3. **Add or edit FRONTEND_URL**
+   - If `FRONTEND_URL` is already there (e.g. a placeholder), click **Edit** (pencil icon) next to it.
+   - If it’s not there, click **Add Environment Variable**.
+   - **Key:** `FRONTEND_URL`  
+   - **Value:** Your **Vercel** app URL from Step 3.3, **no trailing slash**.  
+     Example: `https://rocket-lms-xxxx.vercel.app` or `https://your-app.vercel.app`
+
+4. **Save**
+   - Click **Save Changes** (or **Add**).
+
+### Step 4.2 – Redeploy the backend
+
+Changing env on Render does **not** restart the service automatically. You must trigger a redeploy so the new `FRONTEND_URL` is loaded and CORS allows your Vercel origin.
+
+1. Stay on the same backend service on Render.
+
+2. **Manual Deploy**
+   - In the top right, click **Manual Deploy** → **Deploy latest commit** (or **Clear build cache & deploy** if you had issues).
+   - Wait for the deploy to finish (status **Live**).
+
+3. **Verify**
+   - Open your **Vercel** frontend URL in a browser.
+   - Try logging in or loading data from the API.  
+   - If you see “blocked by CORS” in the browser console, double-check:
+     - `FRONTEND_URL` has **no** trailing slash.
+     - `FRONTEND_URL` matches the frontend origin exactly (same protocol and domain).
+     - You redeployed the backend after changing it.
+
+---
+
+### Quick reference: Step 3 + 4 in order
+
+| Step | Where | What to do |
+|------|--------|------------|
+| 3.1 | Vercel | New Project → Import repo → **Root Directory** = `frontend`. |
+| 3.2 | Vercel | Add env: `VITE_API_URL` = Render backend URL, `VITE_API_KEY` = same as backend `API_KEY`. |
+| 3.3 | Vercel | Deploy → copy the Vercel URL (e.g. `https://your-app.vercel.app`). |
+| 4.1 | Render | Backend service → **Environment** → set `FRONTEND_URL` = that Vercel URL (no trailing slash). |
+| 4.2 | Render | **Manual Deploy** → Deploy latest commit → wait until **Live**. |
+
+Your frontend is now served from Vercel and uses the backend on Render with CORS and API key correctly configured.
+
+---
+
+## How to verify the frontend is connected to the backend
+
+The frontend does not show a visible "Connected to backend" label by default. Use one of these methods to confirm it is using your Render API:
+
+### Method 1: Browser DevTools (Network tab)
+
+1. Open your **Vercel frontend** URL in Chrome/Edge/Firefox (e.g. `https://your-app.vercel.app`).
+2. Press **F12** (or right‑click → Inspect) to open DevTools.
+3. Go to the **Network** tab.
+4. Reload the page (or click **Programs**, **Login**, or any section that loads data).
+5. In the list of requests, look for calls whose **URL starts with your Render backend** (e.g. `https://rocket-lms-backend.onrender.com/api/...`).
+   - If you see such requests and they return status **200** with JSON, the frontend **is** connected to the backend.
+   - If you see **CORS** errors in the Console tab, the backend `FRONTEND_URL` is wrong or you didn’t redeploy after setting it.
+   - If you see **401**, the frontend `VITE_API_KEY` and backend `API_KEY` do not match.
+
+### Method 2: Show API base in the app (optional)
+
+The frontend can show which API URL it is using. Add **`?api=1`** to your frontend URL:
+
+`https://your-app.vercel.app?api=1`
+
+If the project includes the optional API indicator in the footer, you will see a line like **API: https://rocket-lms-backend.onrender.com** at the bottom. That confirms the frontend is configured to use that backend. (Remove `?api=1` for normal use.)
+
+### Method 3: Try a real action
+
+- **Login:** Use the frontend login with a user that exists in your **deployed** database. If login works, the frontend is talking to the backend.
+- **Programs/courses:** If the backend DB has data, featured programs or categories should load. If the DB is empty (migrations-only deploy), those sections will be empty — but requests in the Network tab will still go to your Render URL. That confirms **connection**; empty content is a **data** issue (see next section).
+
+---
+
+## Why don’t I see my old data? (PostgreSQL is empty)
+
+The guide recommended **Render PostgreSQL + migrations only**. That means:
+
+- Laravel creates **tables** from migrations (schema).
+- The database **starts empty** — no courses, users, or other content from your old setup.
+
+Your previous content (from **KFM.sql** or your local MySQL) was **not** imported into Render’s PostgreSQL. So the frontend **is** connected to the backend, but the backend database has no rows yet.
+
+### To get your existing data to production you have two options:
+
+**Option A – Use MySQL elsewhere (easiest if you want KFM.sql as-is)**
+
+1. Create a **MySQL** database on [Railway](https://railway.app), [PlanetScale](https://planetscale.com), [Aiven](https://aiven.io), or another host that allows external connections.
+2. Import your data: `mysql -h HOST -u USER -p DATABASE < Databases/KFM.sql` (or use the provider’s import/restore).
+3. On **Render** → your backend service → **Environment**:
+   - Set `DB_CONNECTION=mysql`.
+   - Set `DATABASE_URL=mysql://USER:PASSWORD@HOST:3306/DATABASE` (or set `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`).
+   - Ensure the MySQL host allows connections from Render (allowlist IPs or use a public URL if the provider offers it).
+4. **Redeploy** the backend. The frontend (Vercel) stays the same; it will now get data from the new MySQL database.
+
+**Option B – Put your data into Render’s PostgreSQL**
+
+1. Convert **KFM.sql** (MySQL) to PostgreSQL (e.g. with [pgloader](https://pgloader.io/) or a conversion script).
+2. Import the converted data into your **Render PostgreSQL** instance (via `psql` or the provider’s import, if available).
+3. Keep `DB_CONNECTION=pgsql` and `DATABASE_URL` as they are. Redeploy if needed.
+
+After Option A or B, your frontend will show the same content you had in your original database.
 
 ---
 
@@ -197,10 +356,26 @@ Your frontend is now served from Vercel and uses the backend on Render.
 
 - [ ] PostgreSQL created on Render; **Internal Database URL** copied.  
 - [ ] Backend Web Service created; **Root Directory** = `backend`, **Runtime** = Docker.  
-- [ ] Backend env: `APP_KEY`, `JWT_SECRET`, `API_KEY`, `DATABASE_URL`, `DB_CONNECTION=pgsql`, `APP_URL`, `FRONTEND_URL`, `SERVE_REACT_FROM_BACKEND=false`.  
-- [ ] Frontend project on Vercel; **Root Directory** = `frontend`.  
+- [ ] Backend env (add in Render **Environment** tab; use **`backend/.env.render.example`** as reference): `APP_KEY`, `JWT_SECRET`, `API_KEY`, `DATABASE_URL`, `DB_CONNECTION=pgsql`, `APP_URL`, `FRONTEND_URL`, `SERVE_REACT_FROM_BACKEND=false`.  
+- [ ] Frontend project on Vercel; **Root Directory** = `frontend` (see Part 3 step-by-step).  
 - [ ] Frontend env: `VITE_API_URL` = backend URL, `VITE_API_KEY` = same as backend `API_KEY`.  
-- [ ] After first frontend deploy, `FRONTEND_URL` set on backend and backend redeployed.
+- [ ] **Step 4:** After first frontend deploy, set backend `FRONTEND_URL` to the Vercel URL (no trailing slash), then **Manual Deploy** the backend so CORS works.
+
+---
+
+## What env to use when deploying on Render
+
+**You do not upload any .env file.** Render expects environment variables to be set in the dashboard:
+
+1. Open your **Web Service** on Render → **Environment**.
+2. Add each variable by hand (key + value), or use **Bulk edit** and paste keys one per line.
+3. Use **`backend/.env.render.example`** as the list of variable **names** and replace the placeholder values with your real ones:
+   - `APP_KEY` → run `php artisan key:generate --show` locally, paste.
+   - `JWT_SECRET` → run `php artisan jwt:secret --show` locally, paste.
+   - `DATABASE_URL` → **Internal Database URL** from your Render PostgreSQL (Part 1).
+   - `APP_URL` → your backend URL (e.g. `https://rocket-lms-backend.onrender.com`) after first deploy.
+   - `FRONTEND_URL` → your Vercel URL (e.g. `https://your-app.vercel.app`) after Part 3.
+   - `API_KEY` → any strong secret; same value must be set as `VITE_API_KEY` on Vercel.
 
 ---
 

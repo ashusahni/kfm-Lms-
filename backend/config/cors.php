@@ -21,8 +21,9 @@ return [
 
     // When FRONTEND_URL is set in .env, only that origin is allowed (recommended for production).
     // Otherwise allow all origins (convenient for local dev).
+    // Normalize: trim and strip trailing slash so CORS matches browser's Origin header.
     'allowed_origins' => config('frontend.url')
-        ? [rtrim(config('frontend.url'), '/')]
+        ? [rtrim(trim(config('frontend.url')), '/')]
         : ['*'],
 
     'allowed_origins_patterns' => [],

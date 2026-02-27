@@ -1,6 +1,12 @@
 import { Instagram, Twitter, Youtube, Linkedin } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { getApiBase } from "@/lib/api";
 
 const Footer = () => {
+  const [searchParams] = useSearchParams();
+  const showApi = searchParams.get("api") === "1";
+  const apiBase = getApiBase();
+
   return (
     <footer className="relative bg-gradient-footer text-primary-foreground/85 py-16 md:py-20 overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-foreground/20 to-transparent" />
@@ -68,6 +74,11 @@ const Footer = () => {
 
         <div className="border-t border-primary-foreground/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-primary-foreground/50">
           <p>© 2026 Fit Karnataka Mission. All rights reserved.</p>
+          {showApi && apiBase && (
+            <p className="text-xs font-mono bg-primary-foreground/10 px-2 py-1 rounded">
+              API: {apiBase}
+            </p>
+          )}
           <div className="flex gap-6">
             <a href="#" className="hover:text-primary-foreground/80 transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-primary-foreground/80 transition-colors">Terms of Service</a>
