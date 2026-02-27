@@ -14,6 +14,15 @@ import VerifyAccount from "./pages/VerifyAccount";
 import Programs from "./pages/Programs";
 import ProgramDetail from "./pages/ProgramDetail";
 import Panel from "./pages/Panel";
+import Dashboard from "./pages/panel/Dashboard";
+import PanelPrograms from "./pages/panel/PanelPrograms";
+import PanelMeetings from "./pages/panel/PanelMeetings";
+import PanelCart from "./pages/panel/PanelCart";
+import PanelCheckout from "./pages/panel/PanelCheckout";
+import HealthLogOverview from "./pages/panel/HealthLogOverview";
+import HealthLogForm from "./pages/panel/HealthLogForm";
+import ProgressPage from "./pages/panel/ProgressPage";
+import NotificationsPage from "./pages/panel/NotificationsPage";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -39,15 +48,20 @@ function AppRoutes() {
             <Panel />
           </ProtectedRoute>
         }
-      />
-      <Route
-        path="/panel/*"
-        element={
-          <ProtectedRoute>
-            <Panel />
-          </ProtectedRoute>
-        }
-      />
+      >
+        <Route index element={<Dashboard />} />
+        <Route path="programs" element={<PanelPrograms />} />
+        <Route path="programs/:id" element={<PanelPrograms />} />
+        <Route path="health-log" element={<HealthLogOverview />} />
+        <Route path="health-log/new" element={<HealthLogForm />} />
+        <Route path="health-log/edit/:id" element={<HealthLogForm />} />
+        <Route path="health-log/weekly" element={<HealthLogOverview />} />
+        <Route path="progress" element={<ProgressPage />} />
+        <Route path="notifications" element={<NotificationsPage />} />
+        <Route path="meetings" element={<PanelMeetings />} />
+        <Route path="cart" element={<PanelCart />} />
+        <Route path="checkout" element={<PanelCheckout />} />
+      </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

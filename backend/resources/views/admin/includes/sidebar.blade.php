@@ -28,7 +28,6 @@
             @endcan
 
             @if($authUser->can('admin_webinars') or
-                $authUser->can('admin_quizzes') or
                 $authUser->can('admin_reviews_lists') or
                 $authUser->can('admin_webinar_assignments') or
                 $authUser->can('admin_enrollment')
@@ -70,15 +69,6 @@
                         @endcan
 
                     </ul>
-                </li>
-            @endcan()
-
-            @can('admin_quizzes')
-                <li class="{{ (request()->is(getAdminPanelUrl('/quizzes*', false))) ? 'active' : '' }}">
-                    <a class="nav-link " href="{{ getAdminPanelUrl() }}/quizzes">
-                        <i class="fas fa-file"></i>
-                        <span>{{ trans('admin/main.quizzes') }}</span>
-                    </a>
                 </li>
             @endcan()
 
@@ -408,9 +398,7 @@
 
             @if($authUser->can('admin_documents') or
                 $authUser->can('admin_sales_list') or
-                $authUser->can('admin_payouts') or
-                $authUser->can('admin_offline_payments_list') or
-                $authUser->can('admin_subscribe')
+                $authUser->can('admin_payouts')
             )
                 <li class="menu-header">{{ trans('admin/main.financial') }}</li>
             @endif
@@ -470,54 +458,12 @@
                 </li>
             @endcan
 
-            @can('admin_offline_payments_list')
-                <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/financial/offline_payments*', false))) ? 'active' : '' }}">
-                    <a href="#" class="nav-link has-dropdown"><i class="fas fa-university"></i> <span>{{ trans('admin/main.offline_payments') }}</span></a>
-                    <ul class="dropdown-menu">
-                        <li class="{{ (request()->is(getAdminPanelUrl('/financial/offline_payments', false)) and request()->get('page_type') == 'requests') ? 'active' : '' }}">
-                            <a href="{{ getAdminPanelUrl() }}/financial/offline_payments?page_type=requests" class="nav-link @if(!empty($sidebarBeeps['offlinePayments']) and $sidebarBeeps['offlinePayments']) beep beep-sidebar @endif">
-                                <span>{{ trans('panel.requests') }}</span>
-                            </a>
-                        </li>
-
-                        <li class="{{ (request()->is(getAdminPanelUrl('/financial/offline_payments', false)) and request()->get('page_type') == 'history') ? 'active' : '' }}">
-                            <a href="{{ getAdminPanelUrl() }}/financial/offline_payments?page_type=history" class="nav-link">
-                                <span>{{ trans('public.history') }}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            @endcan
-
-            @can('admin_subscribe')
-                <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/financial/subscribes*', false))) ? 'active' : '' }}">
-                    <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
-                        <i class="fas fa-cart-plus"></i>
-                        <span>{{ trans('admin/main.subscribes') }}</span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        @can('admin_subscribe_list')
-                            <li class="{{ (request()->is(getAdminPanelUrl('/financial/subscribes', false))) ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ getAdminPanelUrl() }}/financial/subscribes">{{ trans('admin/main.packages') }}</a>
-                            </li>
-                        @endcan
-
-                        @can('admin_subscribe_create')
-                            <li class="{{ (request()->is(getAdminPanelUrl('/financial/subscribes/new', false))) ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ getAdminPanelUrl() }}/financial/subscribes/new">{{ trans('admin/main.new_package') }}</a>
-                            </li>
-                        @endcan
-                    </ul>
-                </li>
-            @endcan
-
-
             @if($authUser->can('admin_settings'))
                 <li class="menu-header">{{ trans('admin/main.settings') }}</li>
             @endif
 
             @can('admin_general_dashboard_show')
-                <li class="{{ (request()->is(getAdminPanelUrl('/health-log*', false)) and !request()->is(getAdminPanelUrl('/course-health-log-settings*', false)) and !request()->is(getAdminPanelUrl('/student-health-logs*', false))) ? 'active' : '' }}">
+                <li class="{{ (request()->is(getAdminPanelUrl('/health-log*', false)) and !request()->is(getAdminPanelUrl('/course-health-log-settings*', false)) and !request()->is(getAdminPanelUrl('/student-health-logs*', false)) and !request()->is(getAdminPanelUrl('/system-health*', false))) ? 'active' : '' }}">
                     <a href="{{ getAdminPanelUrl() }}/health-log" class="nav-link">
                         <i class="fas fa-heartbeat"></i>
                         <span>{{ trans('admin/main.health_log') ?? 'Health Log' }}</span>
@@ -529,10 +475,16 @@
                         <span>{{ trans('admin/main.course_health_log_settings') ?? 'Course health log settings' }}</span>
                     </a>
                 </li>
-                <li class="{{ (request()->is(getAdminPanelUrl('/student-health-logs*', false))) ? 'active' : '' }}">
-                    <a href="{{ getAdminPanelUrl() }}/student-health-logs" class="nav-link">
+                <li class="{{ (request()->is(getAdminPanelUrl('/student-health-logs*', false)) or (request()->is(getAdminPanelUrl('/health-log*', false)) and !request()->is(getAdminPanelUrl('/course-health-log-settings*', false)) and !request()->is(getAdminPanelUrl('/system-health*', false)))) ? 'active' : '' }}">
+                    <a href="{{ getAdminPanelUrl() }}/health-log" class="nav-link">
                         <i class="fas fa-clipboard-list"></i>
                         <span>{{ trans('admin/main.student_health_logs') ?? 'Student health logs' }}</span>
+                    </a>
+                </li>
+                <li class="{{ (request()->is(getAdminPanelUrl('/system-health*', false))) ? 'active' : '' }}">
+                    <a href="{{ getAdminPanelUrl() }}/system-health" class="nav-link">
+                        <i class="fas fa-server"></i>
+                        <span>{{ trans('admin/main.system_health') ?? 'System health' }}</span>
                     </a>
                 </li>
             @endcan

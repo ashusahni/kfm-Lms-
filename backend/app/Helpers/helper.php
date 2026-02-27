@@ -3,6 +3,19 @@
 use App\Mixins\Financial\MultiCurrency;
 use Illuminate\Support\Facades\Cookie;
 
+/**
+ * Return the SPA view or redirect to FRONTEND_URL when the app is served from a separate frontend (e.g. React on :8080).
+ * Use so that only /admin and /api remain on the backend URL.
+ */
+function spaOrRedirectToFrontend()
+{
+    $url = config('frontend.url');
+    if (!empty($url) && !config('frontend.serve_react', false)) {
+        return redirect()->away(rtrim($url, '/') . request()->getRequestUri());
+    }
+    return view('spa');
+}
+
 function getTemplate()
 {
     /*$template = cache()->remember('view.template', 7 * 24 * 60 * 60, function () {

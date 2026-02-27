@@ -1,5 +1,6 @@
 /**
  * Daily health logging API – list, get, create/update.
+ * Contract: HEALTH_LOG_SPEC.md (repo root). Any new field/endpoint must be added in both backend and frontend and the spec updated.
  */
 import { api } from "@/lib/api";
 import { paths } from "@/constants/api-paths";

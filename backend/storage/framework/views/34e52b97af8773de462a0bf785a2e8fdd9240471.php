@@ -16,126 +16,99 @@
 
         <div class="section-body">
             
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="btn-group">
+                        <a href="<?php echo e(getAdminPanelUrl()); ?>/course-health-log-settings" class="btn btn-outline-primary">
+                            <i class="fas fa-book-medical"></i> <?php echo e(trans('admin/main.course_health_log_settings') ?? 'Course health log settings'); ?>
+
+                        </a>
+                        <a href="<?php echo e(getAdminPanelUrl()); ?>/system-health" class="btn btn-outline-secondary">
+                            <i class="fas fa-server"></i> <?php echo e(trans('admin/main.system_health') ?? 'System health'); ?>
+
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            
             <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
                     <div class="card card-statistic-1">
-                        <div class="card-icon bg-primary">
-                            <i class="fas fa-clipboard-list"></i>
-                        </div>
+                        <div class="card-icon bg-primary"><i class="fas fa-clipboard-list"></i></div>
                         <div class="card-wrap">
-                            <div class="card-header">
-                                <h4><?php echo e(trans('admin/main.health_log_total') ?? 'Total checks'); ?></h4>
-                            </div>
+                            <div class="card-header"><h4><?php echo e(trans('admin/main.total_logs') ?? 'Total logs'); ?></h4></div>
                             <div class="card-body"><?php echo e($stats['total'] ?? 0); ?></div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
                     <div class="card card-statistic-1">
-                        <div class="card-icon bg-success">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
+                        <div class="card-icon bg-info"><i class="fas fa-users"></i></div>
                         <div class="card-wrap">
-                            <div class="card-header">
-                                <h4><?php echo e(trans('admin/main.health_status_ok') ?? 'OK'); ?></h4>
-                            </div>
-                            <div class="card-body"><?php echo e($stats['ok'] ?? 0); ?></div>
+                            <div class="card-header"><h4><?php echo e(trans('admin/main.unique_students') ?? 'Unique students'); ?></h4></div>
+                            <div class="card-body"><?php echo e($stats['unique_users'] ?? 0); ?></div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
                     <div class="card card-statistic-1">
-                        <div class="card-icon bg-warning">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
+                        <div class="card-icon bg-success"><i class="fas fa-book"></i></div>
                         <div class="card-wrap">
-                            <div class="card-header">
-                                <h4><?php echo e(trans('admin/main.health_status_warning') ?? 'Warning'); ?></h4>
-                            </div>
-                            <div class="card-body"><?php echo e($stats['warning'] ?? 0); ?></div>
+                            <div class="card-header"><h4><?php echo e(trans('admin/main.logs_with_course') ?? 'With course'); ?></h4></div>
+                            <div class="card-body"><?php echo e($stats['with_course'] ?? 0); ?></div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
                     <div class="card card-statistic-1">
-                        <div class="card-icon bg-danger">
-                            <i class="fas fa-times-circle"></i>
-                        </div>
+                        <div class="card-icon bg-warning"><i class="fas fa-percentage"></i></div>
                         <div class="card-wrap">
-                            <div class="card-header">
-                                <h4><?php echo e(trans('admin/main.health_status_failed') ?? 'Failed'); ?></h4>
-                            </div>
-                            <div class="card-body"><?php echo e($stats['failed'] ?? 0); ?></div>
+                            <div class="card-header"><h4><?php echo e(trans('admin/main.avg_adherence') ?? 'Avg adherence %'); ?></h4></div>
+                            <div class="card-body"><?php echo e($stats['avg_adherence'] ?? '—'); ?></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
+                    <div class="card card-statistic-1">
+                        <div class="card-icon bg-primary"><i class="fas fa-tint"></i></div>
+                        <div class="card-wrap">
+                            <div class="card-header"><h4><?php echo e(trans('admin/main.avg_water') ?? 'Avg water (ml)'); ?></h4></div>
+                            <div class="card-body"><?php echo e($stats['avg_water'] ?? '—'); ?></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
+                    <div class="card card-statistic-1">
+                        <div class="card-icon bg-info"><i class="fas fa-fire"></i></div>
+                        <div class="card-wrap">
+                            <div class="card-header"><h4><?php echo e(trans('admin/main.avg_calories') ?? 'Avg calories'); ?></h4></div>
+                            <div class="card-body"><?php echo e($stats['avg_calories'] ?? '—'); ?></div>
                         </div>
                     </div>
                 </div>
             </div>
 
             
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header flex-wrap">
-                            <h4 class="mb-0"><?php echo e(trans('admin/main.health_log_actions') ?? 'Actions & APIs'); ?></h4>
-                            <div class="card-header-action ml-auto">
-                                <form method="post" action="<?php echo e(getAdminPanelUrl()); ?>/health-log/run-check" class="d-inline" id="health-log-run-form">
-                                    <?php echo csrf_field(); ?>
-                                    <button type="submit" class="btn btn-primary btn-lg btn-icon icon-left" id="btn-run-check">
-                                        <i class="fas fa-play"></i> <?php echo e(trans('admin/main.run_health_check') ?? 'Run health check'); ?>
-
-                                    </button>
-                                </form>
-                                <div class="btn-group ml-2">
-                                    <a href="<?php echo e(getAdminPanelUrl()); ?>/health-log/export/csv?<?php echo e(http_build_query(request()->query())); ?>" class="btn btn-outline-secondary">
-                                        <i class="fas fa-file-csv"></i> <?php echo e(trans('admin/main.export_csv') ?? 'Export CSV'); ?>
-
-                                    </a>
-                                    <a href="<?php echo e(getAdminPanelUrl()); ?>/health-log/export/json?<?php echo e(http_build_query(request()->query())); ?>" class="btn btn-outline-secondary">
-                                        <i class="fas fa-file-code"></i> <?php echo e(trans('admin/main.export_json') ?? 'Export JSON'); ?>
-
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body pt-0">
-                            <p class="text-muted mb-0 font-14">
-                                <strong><?php echo e(trans('admin/main.health_log_read_apis') ?? 'Read APIs'); ?>:</strong>
-                                <code class="ml-1"><?php echo e(getAdminPanelUrl()); ?>/health-log/api/list</code>
-                                <code class="ml-1"><?php echo e(getAdminPanelUrl()); ?>/health-log/api/{id}</code>
-                            </p>
-                            <?php if(!empty($stats['latest_at'])): ?>
-                                <p class="text-muted mb-0 mt-1 font-14">
-                                    <?php echo e(trans('admin/main.last_check_at') ?? 'Last check'); ?>: <?php echo e(dateTimeFormat($stats['latest_at'], 'j M Y H:i')); ?>
-
-                                    &nbsp;|&nbsp; <?php echo e(trans('admin/main.checks_last_24h') ?? 'Checks in last 24h'); ?>: <?php echo e($stats['last_24h'] ?? 0); ?>
-
-                                </p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            
-            <?php if(!empty($chartData) && (($chartData['donut']['ok'] ?? 0) + ($chartData['donut']['warning'] ?? 0) + ($chartData['donut']['failed'] ?? 0)) > 0): ?>
+            <?php if(!empty($chartData['labels']) && (array_sum($chartData['count'] ?? []) > 0 || array_filter($chartData['adherence'] ?? []))): ?>
             <div class="row">
                 <div class="col-lg-6 col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4><?php echo e(trans('admin/main.health_status_distribution') ?? 'Status distribution'); ?></h4>
+                            <h4><?php echo e(trans('admin/main.logs_per_day') ?? 'Logs per day'); ?></h4>
                         </div>
                         <div class="card-body">
-                            <canvas id="healthLogDonutChart" height="200"></canvas>
+                            <canvas id="healthLogCountChart" height="200"></canvas>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4><?php echo e(trans('admin/main.health_trend_14_days') ?? 'Last 14 days'); ?></h4>
+                            <h4><?php echo e(trans('admin/main.adherence_trend') ?? 'Adherence trend (%)'); ?></h4>
                         </div>
                         <div class="card-body">
-                            <canvas id="healthLogTrendChart" height="200"></canvas>
+                            <canvas id="healthLogAdherenceChart" height="200"></canvas>
                         </div>
                     </div>
                 </div>
@@ -144,24 +117,37 @@
 
             
             <div class="card">
-                <div class="card-header">
-                    <h4><?php echo e(trans('admin/main.health_log_list') ?? 'Health log entries'); ?></h4>
+                <div class="card-header flex-wrap">
+                    <h4><?php echo e(trans('admin/main.student_health_logs') ?? 'Student health logs'); ?></h4>
+                    <div class="card-header-action ml-auto">
+                        <a href="<?php echo e(getAdminPanelUrl()); ?>/health-log/export/csv?<?php echo e(http_build_query(request()->query())); ?>" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-file-csv"></i> <?php echo e(trans('admin/main.export_csv') ?? 'Export CSV'); ?>
+
+                        </a>
+                        <a href="<?php echo e(getAdminPanelUrl()); ?>/health-log/export/json?<?php echo e(http_build_query(request()->query())); ?>" class="btn btn-outline-secondary btn-sm ml-1">
+                            <i class="fas fa-file-code"></i> <?php echo e(trans('admin/main.export_json') ?? 'Export JSON'); ?>
+
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <form method="get" action="<?php echo e(getAdminPanelUrl()); ?>/health-log" class="form-inline flex-wrap mb-4">
-                        <label class="mr-2 mb-2 mb-md-0"><?php echo e(trans('admin/main.date_range') ?? 'Date range'); ?>:</label>
-                        <input type="date" name="date_from" class="form-control form-control-sm mr-2 mb-2 mb-md-0" value="<?php echo e(request('date_from')); ?>" placeholder="From">
-                        <input type="date" name="date_to" class="form-control form-control-sm mr-2 mb-2 mb-md-0" value="<?php echo e(request('date_to')); ?>" placeholder="To">
-                        <select name="status" class="form-control form-control-sm mr-2 mb-2 mb-md-0">
-                            <option value=""><?php echo e(trans('admin/main.all_statuses') ?? 'All statuses'); ?></option>
-                            <option value="ok" <?php echo e(request('status') == 'ok' ? 'selected' : ''); ?>>OK</option>
-                            <option value="warning" <?php echo e(request('status') == 'warning' ? 'selected' : ''); ?>>Warning</option>
-                            <option value="failed" <?php echo e(request('status') == 'failed' ? 'selected' : ''); ?>>Failed</option>
+                        <label class="mr-2 mb-2 mb-md-0"><?php echo e(trans('admin/main.course') ?? 'Course'); ?>:</label>
+                        <select name="webinar_id" class="form-control form-control-sm mr-2 mb-2">
+                            <option value=""><?php echo e(trans('admin/main.all_courses') ?? 'All courses'); ?></option>
+                            <?php $__currentLoopData = $coursesWithLogs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $c): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($c->id); ?>" <?php echo e(request('webinar_id') == $c->id ? 'selected' : ''); ?>><?php echo e(\Str::limit($c->title, 40)); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
-                        <input type="text" name="check_name" class="form-control form-control-sm mr-2 mb-2 mb-md-0" placeholder="<?php echo e(trans('admin/main.check_name') ?? 'Check name'); ?>" value="<?php echo e(request('check_name')); ?>">
-                        <button type="submit" class="btn btn-sm btn-primary mb-2 mb-md-0"><i class="fas fa-filter"></i> <?php echo e(trans('admin/main.filter')); ?></button>
-                        <?php if(request()->hasAny(['date_from','date_to','status','check_name'])): ?>
-                            <a href="<?php echo e(getAdminPanelUrl()); ?>/health-log" class="btn btn-sm btn-outline-secondary ml-2 mb-2 mb-md-0"><?php echo e(trans('public.clear') ?? 'Clear'); ?></a>
+                        <label class="mr-2 mb-2 mb-md-0"><?php echo e(trans('admin/main.user_id') ?? 'User ID'); ?>:</label>
+                        <input type="number" name="user_id" class="form-control form-control-sm mr-2 mb-2" placeholder="ID" value="<?php echo e(request('user_id')); ?>" style="width:90px">
+                        <label class="mr-2 mb-2 mb-md-0"><?php echo e(trans('admin/main.from_date') ?? 'From'); ?>:</label>
+                        <input type="date" name="from_date" class="form-control form-control-sm mr-2 mb-2" value="<?php echo e(request('from_date')); ?>">
+                        <label class="mr-2 mb-2 mb-md-0"><?php echo e(trans('admin/main.to_date') ?? 'To'); ?>:</label>
+                        <input type="date" name="to_date" class="form-control form-control-sm mr-2 mb-2" value="<?php echo e(request('to_date')); ?>">
+                        <button type="submit" class="btn btn-sm btn-primary mb-2"><i class="fas fa-filter"></i> <?php echo e(trans('admin/main.filter')); ?></button>
+                        <?php if(request()->hasAny(['webinar_id','user_id','from_date','to_date'])): ?>
+                            <a href="<?php echo e(getAdminPanelUrl()); ?>/health-log" class="btn btn-sm btn-outline-secondary ml-2 mb-2"><?php echo e(trans('public.clear') ?? 'Clear'); ?></a>
                         <?php endif; ?>
                     </form>
 
@@ -169,57 +155,38 @@
                         <table class="table table-striped table-hover font-14">
                             <thead>
                                 <tr>
-                                    <th class="text-left">ID</th>
-                                    <th class="text-left"><?php echo e(trans('admin/main.check_name') ?? 'Check'); ?></th>
-                                    <th class="text-center"><?php echo e(trans('admin/main.status')); ?></th>
-                                    <th class="text-left"><?php echo e(trans('site.message')); ?></th>
-                                    <th class="text-center"><?php echo e(trans('admin/main.created_at')); ?></th>
-                                    <th class="text-center" width="120"><?php echo e(trans('public.controls')); ?></th>
+                                    <th>ID</th>
+                                    <th><?php echo e(trans('admin/main.student') ?? 'Student'); ?></th>
+                                    <th><?php echo e(trans('admin/main.course') ?? 'Course'); ?></th>
+                                    <th><?php echo e(trans('admin/main.log_date') ?? 'Date'); ?></th>
+                                    <th class="text-center"><?php echo e(trans('admin/main.water') ?? 'Water'); ?></th>
+                                    <th class="text-center"><?php echo e(trans('admin/main.calories') ?? 'Cal'); ?></th>
+                                    <th class="text-center"><?php echo e(trans('admin/main.activity') ?? 'Activity'); ?></th>
+                                    <th class="text-center"><?php echo e(trans('admin/main.adherence') ?? 'Adherence'); ?></th>
+                                    <th class="text-center" width="80"><?php echo e(trans('public.controls')); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $__empty_1 = true; $__currentLoopData = $healthLogs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $log): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                <?php $__empty_1 = true; $__currentLoopData = $logs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $log): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                     <tr>
                                         <td><?php echo e($log->id); ?></td>
-                                        <td>
-                                            <span class="font-weight-500"><?php echo e($log->check_name); ?></span>
-                                        </td>
+                                        <td><?php echo e(optional($log->user)->full_name ?? $log->user_id); ?> <small class="text-muted">#<?php echo e($log->user_id); ?></small></td>
+                                        <td><?php echo e(optional($log->webinar)->title ?? '—'); ?></td>
+                                        <td><?php echo e($log->log_date ? (\Carbon\Carbon::parse($log->log_date)->format('Y-m-d')) : '—'); ?></td>
+                                        <td class="text-center"><?php echo e($log->water_ml ?? '—'); ?></td>
+                                        <td class="text-center"><?php echo e($log->calories ?? '—'); ?></td>
+                                        <td class="text-center"><?php echo e($log->activity_minutes ?? '—'); ?> min</td>
+                                        <td class="text-center"><?php echo e($log->adherence_score !== null ? $log->adherence_score . '%' : '—'); ?></td>
                                         <td class="text-center">
-                                            <?php if($log->status === 'ok'): ?>
-                                                <span class="badge badge-success"><i class="fas fa-check mr-1"></i>OK</span>
-                                            <?php elseif($log->status === 'warning'): ?>
-                                                <span class="badge badge-warning"><i class="fas fa-exclamation-triangle mr-1"></i>Warning</span>
-                                            <?php else: ?>
-                                                <span class="badge badge-danger"><i class="fas fa-times mr-1"></i>Failed</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td>
-                                            <span class="text-dark"><?php echo e(Str::limit($log->message, 60)); ?></span>
-                                            <?php if(strlen($log->message ?? '') > 60): ?>
-                                                <a href="#" class="js-health-log-detail text-primary ml-1" data-id="<?php echo e($log->id); ?>" data-message="<?php echo e(e($log->message)); ?>" data-meta="<?php echo e(e(json_encode($log->meta))); ?>"><?php echo e(trans('admin/main.show')); ?></a>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td class="text-center"><?php echo e($log->created_at ? dateTimeFormat($log->created_at, 'j M Y | H:i') : '—'); ?></td>
-                                        <td class="text-center">
-                                            <a href="<?php echo e(getAdminPanelUrl()); ?>/health-log/<?php echo e($log->id); ?>" class="btn btn-sm btn-outline-primary" title="<?php echo e(trans('admin/main.show')); ?>">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
+                                            <a href="<?php echo e(getAdminPanelUrl()); ?>/health-log/<?php echo e($log->id); ?>" class="btn btn-sm btn-outline-primary" title="<?php echo e(trans('admin/main.show')); ?>"><i class="fas fa-eye"></i></a>
                                         </td>
                                     </tr>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                     <tr>
-                                        <td colspan="6" class="text-center py-5">
-                                            <div class="text-muted">
-                                                <i class="fas fa-heartbeat fa-3x mb-3 opacity-50"></i>
-                                                <p class="mb-2"><?php echo e(trans('admin/main.health_log_no_entries') ?? 'No health log entries yet.'); ?></p>
-                                                <form method="post" action="<?php echo e(getAdminPanelUrl()); ?>/health-log/run-check" class="d-inline">
-                                                    <?php echo csrf_field(); ?>
-                                                    <button type="submit" class="btn btn-primary">
-                                                        <i class="fas fa-play mr-1"></i> <?php echo e(trans('admin/main.run_health_check') ?? 'Run health check now'); ?>
-
-                                                    </button>
-                                                </form>
-                                            </div>
+                                        <td colspan="9" class="text-center py-5 text-muted">
+                                            <i class="fas fa-clipboard-list fa-2x mb-2 opacity-50"></i>
+                                            <p class="mb-0"><?php echo e(trans('admin/main.no_student_health_logs') ?? 'No student health logs yet.'); ?></p>
+                                            <p class="small mt-1"><?php echo e(trans('admin/main.students_log_in_panel') ?? 'Students log daily entries in their panel.'); ?></p>
                                         </td>
                                     </tr>
                                 <?php endif; ?>
@@ -227,107 +194,76 @@
                         </table>
                     </div>
                 </div>
-                <?php if($healthLogs->hasPages()): ?>
+                <?php if($logs->hasPages()): ?>
                 <div class="card-footer text-center">
-                    <?php echo e($healthLogs->appends(request()->input())->links()); ?>
+                    <?php echo e($logs->appends(request()->input())->links()); ?>
 
                 </div>
                 <?php endif; ?>
             </div>
         </div>
     </section>
-
-    
-    <div class="modal fade" id="healthLogDetailModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><?php echo e(trans('admin/main.health_log_detail') ?? 'Log detail'); ?></h5>
-                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
-                </div>
-                <div class="modal-body">
-                    <p class="mb-2"><strong><?php echo e(trans('site.message')); ?>:</strong></p>
-                    <p id="health-log-detail-message" class="text-muted font-14 mb-3"></p>
-                    <p class="mb-2"><strong>Meta:</strong></p>
-                    <pre id="health-log-detail-meta" class="bg-light p-3 rounded font-12 mb-0" style="max-height:200px;overflow:auto;"></pre>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo e(trans('public.close')); ?></button>
-                </div>
-            </div>
-        </div>
-    </div>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startPush('scripts_bottom'); ?>
     <script src="/assets/default/vendors/chartjs/chart.min.js"></script>
     <script>
         (function() {
-            var runForm = document.getElementById('health-log-run-form');
-            if (runForm) {
-                runForm.addEventListener('submit', function() {
-                    var btn = document.getElementById('btn-run-check');
-                    if (btn) {
-                        btn.disabled = true;
-                        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Running...';
+            <?php if(!empty($chartData['labels'])): ?>
+            var labels = <?php echo json_encode($chartData['labels'] ?? [], 15, 512) ?>;
+            var countData = <?php echo json_encode($chartData['count'] ?? [], 15, 512) ?>;
+            var adherenceData = <?php echo json_encode($chartData['adherence'] ?? [], 15, 512) ?>;
+
+            var countCtx = document.getElementById('healthLogCountChart');
+            if (countCtx && countData.length) {
+                new Chart(countCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '<?php echo e(trans("admin/main.logs") ?? "Logs"); ?>',
+                            data: countData,
+                            backgroundColor: 'rgba(40, 167, 69, 0.6)',
+                            borderColor: '#28a745',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            yAxes: [{ ticks: { beginAtZero: true, stepSize: 1 } }]
+                        },
+                        legend: { display: false }
                     }
                 });
             }
-
-            $('.js-health-log-detail').on('click', function(e) {
-                e.preventDefault();
-                var msg = $(this).data('message') || '—';
-                var meta = $(this).data('meta');
-                try { meta = meta ? JSON.stringify(JSON.parse(meta), null, 2) : '—'; } catch(x) { meta = meta || '—'; }
-                $('#health-log-detail-message').text(msg);
-                $('#health-log-detail-meta').text(meta);
-                $('#healthLogDetailModal').modal('show');
-            });
-
-            <?php if(!empty($chartData) && (($chartData['donut']['ok'] ?? 0) + ($chartData['donut']['warning'] ?? 0) + ($chartData['donut']['failed'] ?? 0)) > 0): ?>
-            (function() {
-                var donutCtx = document.getElementById('healthLogDonutChart');
-                if (donutCtx) {
-                    new Chart(donutCtx.getContext('2d'), {
-                        type: 'doughnut',
-                        data: {
-                            labels: ['OK', 'Warning', 'Failed'],
-                            datasets: [{
-                                data: [<?php echo e($chartData['donut']['ok'] ?? 0); ?>, <?php echo e($chartData['donut']['warning'] ?? 0); ?>, <?php echo e($chartData['donut']['failed'] ?? 0); ?>],
-                                backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
-                                borderWidth: 0
-                            }]
+            var adherenceCtx = document.getElementById('healthLogAdherenceChart');
+            if (adherenceCtx && adherenceData.length) {
+                new Chart(adherenceCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '<?php echo e(trans("admin/main.avg_adherence") ?? "Avg adherence %"); ?>',
+                            data: adherenceData,
+                            borderColor: '#007bff',
+                            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            spanGaps: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            yAxes: [{ ticks: { beginAtZero: true, max: 100 } }]
                         },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: true,
-                            legend: { position: 'bottom' }
-                        }
-                    });
-                }
-                var trendCtx = document.getElementById('healthLogTrendChart');
-                if (trendCtx) {
-                    new Chart(trendCtx.getContext('2d'), {
-                        type: 'line',
-                        data: {
-                            labels: <?php echo json_encode($chartData['labels'] ?? [], 15, 512) ?>,
-                            datasets: [
-                                { label: 'OK', data: <?php echo json_encode($chartData['ok'] ?? [], 15, 512) ?>, borderColor: '#28a745', backgroundColor: 'rgba(40,167,69,0.1)', fill: true, tension: 0.3 },
-                                { label: 'Warning', data: <?php echo json_encode($chartData['warning'] ?? [], 15, 512) ?>, borderColor: '#ffc107', backgroundColor: 'rgba(255,193,7,0.1)', fill: true, tension: 0.3 },
-                                { label: 'Failed', data: <?php echo json_encode($chartData['failed'] ?? [], 15, 512) ?>, borderColor: '#dc3545', backgroundColor: 'rgba(220,53,69,0.1)', fill: true, tension: 0.3 }
-                            ]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: true,
-                            scales: {
-                                yAxes: [{ ticks: { beginAtZero: true } }]
-                            },
-                            legend: { position: 'bottom' }
-                        }
-                    });
-                }
-            })();
+                        legend: { display: false }
+                    }
+                });
+            }
             <?php endif; ?>
         })();
     </script>

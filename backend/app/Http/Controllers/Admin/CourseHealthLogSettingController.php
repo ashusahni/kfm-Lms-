@@ -17,17 +17,18 @@ class CourseHealthLogSettingController extends Controller
         $this->authorize('admin_general_dashboard_show');
 
         $query = Webinar::query()
-            ->whereIn('status', ['active', 'pending'])
-            ->select('id', 'title', 'created_at')
-            ->orderBy('title');
+            ->whereIn('status', ['active', 'pending']);
 
         if ($request->filled('q')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->get('q') . '%')
-                    ->orWhere('id', $request->get('q'));
+            $search = $request->get('q');
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('translations', function ($t) use ($search) {
+                    $t->where('title', 'like', '%' . $search . '%');
+                })->orWhere('id', $search);
             });
         }
 
+        $query->orderBy('id');
         $webinars = $query->paginate(20)->appends($request->query());
         $settingIds = CourseHealthLogSetting::whereIn('webinar_id', $webinars->pluck('id'))->pluck('webinar_id')->toArray();
 

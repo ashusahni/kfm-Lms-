@@ -39,9 +39,11 @@
                                     </li>
                                 @endcan
 
+                                {{-- Referral (paid add-on) - Removed
                                 <li class="nav-item">
                                     <a class="nav-link " id="referral-tab" data-toggle="tab" href="#referral" role="tab" aria-controls="referral" aria-selected="true">{{ trans('admin/main.referral') }}</a>
                                 </li>
+                                --}}
 
                                 <li class="nav-item">
                                     <a class="nav-link @if(request()->get('tab') == "currency") active @endif" id="currency-tab" href="{{ getAdminPanelUrl("/settings/financial?tab=currency") }}">{{ trans('admin/main.currency') }}</a>
@@ -63,7 +65,9 @@
                                     @include('admin.settings.financial.payment_channel.lists')
                                 @endcan
 
+                                {{-- Referral (paid add-on) - Removed
                                 @include('admin.settings.financial.referral',['itemValue' => (!empty($settings) and !empty($settings['referral'])) ? $settings['referral']->value : ''])
+                                --}}
 
                                 @if(request()->get('tab') == "currency")
                                     @include('admin.settings.financial.currency',['itemValue' => (!empty($settings) and !empty($settings[\App\Models\Setting::$currencySettingsName])) ? $settings[\App\Models\Setting::$currencySettingsName]->value : ''])

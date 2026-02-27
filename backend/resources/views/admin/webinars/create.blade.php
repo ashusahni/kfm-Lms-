@@ -408,8 +408,8 @@
                                             <div class="form-group mt-30 d-flex align-items-center justify-content-between">
                                                 <label class="" for="privateSwitch">{{ trans('update.enable_waitlist') }}</label>
                                                 <div class="custom-control custom-switch">
-                                                    <input type="checkbox" name="enable_waitlist" class="custom-control-input" id="enable_waitlistSwitch" {{ (!empty($webinar) and $webinar->enable_waitlist) ? 'checked' : ''  }}>
-                                                    <label class="custom-control-label" for="enable_waitlistSwitch"></label>
+                                                    {{-- Paid add-on removed --}}
+                                                    <input type="hidden" name="enable_waitlist" value="0">
                                                 </div>
                                             </div>
 

@@ -12,6 +12,17 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import type { HealthLog } from "@/types/api";
+
+function normalizeLogDate(log: HealthLog): string {
+  const d = log.log_date;
+  if (typeof d === "number") return format(new Date(d * 1000), "yyyy-MM-dd");
+  try {
+    return format(new Date(d), "yyyy-MM-dd");
+  } catch {
+    return "";
+  }
+}
 
 export default function ProgressPage() {
   const from = format(subDays(new Date(), 30), "yyyy-MM-dd");
@@ -21,7 +32,12 @@ export default function ProgressPage() {
     queryFn: () => healthService.list({ from_date: from, to_date: to, per_page: 30 }),
   });
 
-  const logs = data?.data ?? [];
+  const rawList = data;
+  const logs: HealthLog[] = Array.isArray(rawList)
+    ? rawList
+    : (rawList && typeof rawList === "object" && "data" in rawList && Array.isArray((rawList as { data: unknown[] }).data)
+      ? (rawList as { data: HealthLog[] }).data
+      : []);
   const last7 = logs.slice(0, 7);
   const last30 = logs.slice(0, 30);
   const adherence7 =
@@ -39,17 +55,17 @@ export default function ProgressPage() {
 
   let streak = 0;
   const sorted = [...logs].sort(
-    (a, b) => new Date(b.log_date).getTime() - new Date(a.log_date).getTime()
+    (a, b) => new Date(normalizeLogDate(b)).getTime() - new Date(normalizeLogDate(a)).getTime()
   );
   for (const log of sorted) {
-    const d = format(new Date(log.log_date), "yyyy-MM-dd");
+    const d = normalizeLogDate(log);
     const expected = format(subDays(new Date(), streak), "yyyy-MM-dd");
     if (d === expected && ((log.water_ml ?? 0) > 0 || (log.calories ?? 0) > 0)) streak++;
     else break;
   }
 
   const chartData = [...last30].reverse().map((l) => ({
-    date: format(new Date(l.log_date), "MM/dd"),
+    date: format(new Date(normalizeLogDate(l)), "MM/dd"),
     score: l.adherence_score ?? 0,
     water: (l.water_ml ?? 0) / 1000,
     calories: l.calories ?? 0,

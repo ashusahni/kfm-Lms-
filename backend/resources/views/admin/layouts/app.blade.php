@@ -74,11 +74,11 @@
 
 </div>
 
-{{-- AI Contents --}}
+{{-- AI Contents (paid add-on) - Removed
 @if(!empty(getAiContentsSettingsName("status")) and !empty(getAiContentsSettingsName("active_for_admin_panel")))
     @include('admin.includes.aiContent.generator')
 @endif
-
+--}}
 
 <!-- General JS Scripts -->
 <script src="/assets/admin/vendor/jquery/jquery-3.3.1.min.js"></script>
@@ -143,7 +143,7 @@
 </script>
 
 <script src="/assets/admin/js/custom.js"></script>
-<script src="/assets/default/js/panel/ai-content-generator.min.js"></script>
+{{-- AI content generator (paid add-on) - Removed: <script src="/assets/default/js/panel/ai-content-generator.min.js"></script> --}}
 
 <script>
     (function () {

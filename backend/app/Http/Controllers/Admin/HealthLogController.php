@@ -3,102 +3,133 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\HealthLog;
-use App\Services\HealthCheckService;
+use App\Models\StudentDailyHealthLog;
+use App\Models\Webinar;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
+/**
+ * Admin health log: student daily health logs (aligned with frontend panel).
+ * Lists all student logs with stats, filters, export; view single log; link to course settings.
+ * System health checks moved to SystemHealthController at /admin/system-health.
+ */
 class HealthLogController extends Controller
 {
-    /**
-     * Health log list page.
-     */
     public function index(Request $request)
     {
         $this->authorize('admin_general_dashboard_show');
 
-        $query = $this->buildQuery($request);
-        $healthLogs = $query->paginate(15)->appends($request->query());
+        $query = StudentDailyHealthLog::with(['user:id,full_name,email', 'webinar'])
+            ->orderBy('log_date', 'desc')
+            ->orderBy('id', 'desc');
+
+        if ($request->filled('webinar_id')) {
+            $query->where('webinar_id', (int) $request->webinar_id);
+        }
+        if ($request->filled('user_id')) {
+            $query->where('user_id', (int) $request->user_id);
+        }
+        if ($request->filled('from_date')) {
+            $query->where('log_date', '>=', $request->from_date);
+        }
+        if ($request->filled('to_date')) {
+            $query->where('log_date', '<=', $request->to_date);
+        }
+
+        $perPage = min((int) $request->get('per_page', 20), 100);
+        $logs = $query->paginate($perPage)->appends($request->query());
 
         $stats = $this->getStats($request);
         $chartData = $this->getChartData($request);
+        // Title is in webinar_translations, not webinars table
+        $locale = app()->getLocale();
+        $courseIds = StudentDailyHealthLog::whereNotNull('webinar_id')->distinct()->pluck('webinar_id');
+        $coursesWithLogs = collect();
+        if ($courseIds->isNotEmpty()) {
+            $coursesWithLogs = \DB::table('webinars')
+                ->whereIn('webinars.id', $courseIds)
+                ->leftJoin('webinar_translations', function ($j) use ($locale) {
+                    $j->on('webinars.id', '=', 'webinar_translations.webinar_id')
+                        ->where('webinar_translations.locale', '=', $locale);
+                })
+                ->select('webinars.id', \DB::raw('COALESCE(webinar_translations.title, CONCAT("Course #", webinars.id)) as title'))
+                ->orderBy('title')
+                ->get();
+        }
 
         $data = [
             'pageTitle' => trans('admin/main.health_log') ?? 'Health Log',
-            'healthLogs' => $healthLogs,
+            'logs' => $logs,
             'stats' => $stats,
             'chartData' => $chartData,
+            'coursesWithLogs' => $coursesWithLogs,
         ];
 
         return view('admin.health_log.index', $data);
     }
 
-    /**
-     * Single health log detail page.
-     */
     public function show($id)
     {
         $this->authorize('admin_general_dashboard_show');
 
-        $healthLog = HealthLog::findOrFail($id);
+        $log = StudentDailyHealthLog::with(['user:id,full_name,email,avatar', 'webinar'])->findOrFail($id);
 
         $data = [
-            'pageTitle' => trans('admin/main.health_log') ?? 'Health Log',
-            'healthLog' => $healthLog,
+            'pageTitle' => trans('admin/main.student_health_log') ?? 'Student health log',
+            'log' => $log,
         ];
 
         return view('admin.health_log.show', $data);
     }
 
-    /**
-     * Run health checks and log results.
-     */
-    public function runCheck(Request $request)
-    {
-        $this->authorize('admin_general_dashboard_show');
-
-        $service = new HealthCheckService();
-        $results = $service->runAll();
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'success' => true,
-                'message' => trans('admin/main.health_check_completed') ?? 'Health check completed.',
-                'results' => $results,
-            ]);
-        }
-
-        $toastData = [
-            'title' => trans('public.request_success'),
-            'msg' => trans('admin/main.health_check_completed') ?? 'Health check completed.',
-            'status' => 'success',
-        ];
-        return redirect(getAdminPanelUrl() . '/health-log')->with(['toast' => $toastData]);
-    }
-
-    /**
-     * Export health logs as CSV.
-     */
     public function exportCsv(Request $request): StreamedResponse
     {
         $this->authorize('admin_general_dashboard_show');
 
-        $query = $this->buildQuery($request);
-        $logs = $query->limit(5000)->get();
+        $query = StudentDailyHealthLog::with(['user:id,full_name,email', 'webinar'])
+            ->orderBy('log_date', 'desc');
 
-        $filename = 'health_logs_' . date('Y-m-d_His') . '.csv';
+        if ($request->filled('webinar_id')) {
+            $query->where('webinar_id', (int) $request->webinar_id);
+        }
+        if ($request->filled('user_id')) {
+            $query->where('user_id', (int) $request->user_id);
+        }
+        if ($request->filled('from_date')) {
+            $query->where('log_date', '>=', $request->from_date);
+        }
+        if ($request->filled('to_date')) {
+            $query->where('log_date', '<=', $request->to_date);
+        }
+
+        $logs = $query->limit(10000)->get();
+        $filename = 'student_health_logs_' . date('Y-m-d_His') . '.csv';
 
         return response()->streamDownload(function () use ($logs) {
             $out = fopen('php://output', 'w');
-            fputcsv($out, ['ID', 'Check', 'Status', 'Message', 'Created At', 'Meta']);
+            fputcsv($out, [
+                'ID', 'User', 'Email', 'Course', 'Log date', 'Water (ml)', 'Calories', 'Protein', 'Carbs', 'Fat',
+                'Medicines', 'Activity (min)', 'Activity notes', 'Adherence %', 'Meals', 'Custom data', 'Created',
+            ]);
             foreach ($logs as $log) {
                 fputcsv($out, [
                     $log->id,
-                    $log->check_name,
-                    $log->status,
-                    $log->message,
-                    $log->created_at ? date('Y-m-d H:i:s', $log->created_at) : '',
-                    $log->meta ? json_encode($log->meta) : '',
+                    optional($log->user)->full_name ?? $log->user_id,
+                    optional($log->user)->email ?? '',
+                    optional($log->webinar)->title ?? ($log->webinar_id ?: '—'),
+                    $log->log_date ? (\Carbon\Carbon::parse($log->log_date)->format('Y-m-d')) : '',
+                    $log->water_ml ?? '',
+                    $log->calories ?? '',
+                    $log->protein ?? '',
+                    $log->carbs ?? '',
+                    $log->fat ?? '',
+                    $log->medicines ?? '',
+                    $log->activity_minutes ?? '',
+                    $log->activity_notes ?? '',
+                    $log->adherence_score ?? '',
+                    $log->meals ? json_encode($log->meals) : '',
+                    $log->custom_data ? json_encode($log->custom_data) : '',
+                    $log->created_at ? date('Y-m-d H:i', $log->created_at) : '',
                 ]);
             }
             fclose($out);
@@ -108,16 +139,28 @@ class HealthLogController extends Controller
         ]);
     }
 
-    /**
-     * Export health logs as JSON.
-     */
     public function exportJson(Request $request)
     {
         $this->authorize('admin_general_dashboard_show');
 
-        $query = $this->buildQuery($request);
-        $logs = $query->limit(5000)->get();
-        $filename = 'health_logs_' . date('Y-m-d_His') . '.json';
+        $query = StudentDailyHealthLog::with(['user:id,full_name,email', 'webinar'])
+            ->orderBy('log_date', 'desc');
+
+        if ($request->filled('webinar_id')) {
+            $query->where('webinar_id', (int) $request->webinar_id);
+        }
+        if ($request->filled('user_id')) {
+            $query->where('user_id', (int) $request->user_id);
+        }
+        if ($request->filled('from_date')) {
+            $query->where('log_date', '>=', $request->from_date);
+        }
+        if ($request->filled('to_date')) {
+            $query->where('log_date', '<=', $request->to_date);
+        }
+
+        $logs = $query->limit(10000)->get();
+        $filename = 'student_health_logs_' . date('Y-m-d_His') . '.json';
 
         return response()->streamDownload(
             function () use ($logs) {
@@ -128,143 +171,85 @@ class HealthLogController extends Controller
         );
     }
 
-    /**
-     * Read API: list health logs (JSON).
-     */
-    public function indexApi(Request $request)
-    {
-        $this->authorize('admin_general_dashboard_show');
-
-        $perPage = min((int) $request->get('per_page', 15), 100);
-        $query = $this->buildQuery($request);
-        $healthLogs = $query->paginate($perPage);
-
-        return response()->json([
-            'data' => $healthLogs->items(),
-            'meta' => [
-                'current_page' => $healthLogs->currentPage(),
-                'last_page' => $healthLogs->lastPage(),
-                'per_page' => $healthLogs->perPage(),
-                'total' => $healthLogs->total(),
-            ],
-        ]);
-    }
-
-    /**
-     * Read API: single health log (JSON).
-     */
-    public function showApi($id)
-    {
-        $this->authorize('admin_general_dashboard_show');
-
-        $healthLog = HealthLog::findOrFail($id);
-
-        return response()->json(['data' => $healthLog]);
-    }
-
-    protected function buildQuery(Request $request)
-    {
-        $query = HealthLog::query()->orderBy('created_at', 'desc');
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->get('status'));
-        }
-        if ($request->filled('check_name')) {
-            $query->where('check_name', 'like', '%' . $request->get('check_name') . '%');
-        }
-        if ($request->filled('date_from')) {
-            $ts = strtotime($request->get('date_from') . ' 00:00:00');
-            if ($ts) {
-                $query->where('created_at', '>=', $ts);
-            }
-        }
-        if ($request->filled('date_to')) {
-            $ts = strtotime($request->get('date_to') . ' 23:59:59');
-            if ($ts) {
-                $query->where('created_at', '<=', $ts);
-            }
-        }
-
-        return $query;
-    }
-
     protected function getStats(Request $request): array
     {
-        $base = HealthLog::query();
-        $this->applyDateFilter($base, $request);
+        $base = StudentDailyHealthLog::query();
+        if ($request->filled('webinar_id')) {
+            $base->where('webinar_id', (int) $request->webinar_id);
+        }
+        if ($request->filled('user_id')) {
+            $base->where('user_id', (int) $request->user_id);
+        }
+        if ($request->filled('from_date')) {
+            $base->where('log_date', '>=', $request->from_date);
+        }
+        if ($request->filled('to_date')) {
+            $base->where('log_date', '<=', $request->to_date);
+        }
 
         $total = (clone $base)->count();
-        $ok = (clone $base)->where('status', HealthLog::STATUS_OK)->count();
-        $warning = (clone $base)->where('status', HealthLog::STATUS_WARNING)->count();
-        $failed = (clone $base)->where('status', HealthLog::STATUS_FAILED)->count();
-
-        $last24h = HealthLog::where('created_at', '>=', time() - 86400)->count();
-        $latest = HealthLog::orderBy('created_at', 'desc')->first();
+        $withCourse = (clone $base)->whereNotNull('webinar_id')->count();
+        $avgAdherence = (clone $base)->whereNotNull('adherence_score')->avg('adherence_score');
+        $uniqueUsers = (clone $base)->distinct()->count('user_id');
+        $avgWater = (clone $base)->whereNotNull('water_ml')->where('water_ml', '>', 0)->avg('water_ml');
+        $avgCalories = (clone $base)->whereNotNull('calories')->where('calories', '>', 0)->avg('calories');
 
         return [
             'total' => $total,
-            'ok' => $ok,
-            'warning' => $warning,
-            'failed' => $failed,
-            'last_24h' => $last24h,
-            'latest_at' => $latest ? $latest->created_at : null,
+            'with_course' => $withCourse,
+            'avg_adherence' => $avgAdherence ? round($avgAdherence, 1) : null,
+            'unique_users' => $uniqueUsers,
+            'avg_water' => $avgWater ? round($avgWater, 0) : null,
+            'avg_calories' => $avgCalories ? round($avgCalories, 0) : null,
         ];
     }
 
     protected function getChartData(Request $request): array
     {
         $days = 14;
-        $end = time();
-        $start = $end - ($days * 86400);
-        $query = HealthLog::where('created_at', '>=', $start)->where('created_at', '<=', $end);
-        $this->applyDateFilter($query, $request);
-
-        $logs = $query->get();
-        $labels = [];
-        $okData = [];
-        $warningData = [];
-        $failedData = [];
-
-        for ($i = $days - 1; $i >= 0; $i--) {
-            $dayStart = strtotime('midnight', $end - $i * 86400);
-            $dayEnd = $dayStart + 86400 - 1;
-            $labels[] = date('M j', $dayStart);
-            $dayLogs = $logs->filter(function ($log) use ($dayStart, $dayEnd) {
-                return $log->created_at >= $dayStart && $log->created_at <= $dayEnd;
-            });
-            $okData[] = $dayLogs->where('status', HealthLog::STATUS_OK)->count();
-            $warningData[] = $dayLogs->where('status', HealthLog::STATUS_WARNING)->count();
-            $failedData[] = $dayLogs->where('status', HealthLog::STATUS_FAILED)->count();
+        $end = $request->filled('to_date') ? strtotime($request->to_date . ' 23:59:59') : time();
+        $start = $request->filled('from_date') ? strtotime($request->from_date . ' 00:00:00') : ($end - ($days * 86400));
+        $rangeStart = $end - ($days * 86400);
+        if ($start < $rangeStart) {
+            $start = $rangeStart;
         }
 
-        $statusCounts = [
-            'ok' => $logs->where('status', HealthLog::STATUS_OK)->count(),
-            'warning' => $logs->where('status', HealthLog::STATUS_WARNING)->count(),
-            'failed' => $logs->where('status', HealthLog::STATUS_FAILED)->count(),
-        ];
+        $query = StudentDailyHealthLog::query()
+            ->where('log_date', '>=', date('Y-m-d', $start))
+            ->where('log_date', '<=', date('Y-m-d', $end));
+
+        if ($request->filled('webinar_id')) {
+            $query->where('webinar_id', (int) $request->webinar_id);
+        }
+        if ($request->filled('user_id')) {
+            $query->where('user_id', (int) $request->user_id);
+        }
+
+        $logs = $query->get();
+
+        $labels = [];
+        $countData = [];
+        $adherenceData = [];
+
+        for ($i = $days - 1; $i >= 0; $i--) {
+            $day = date('Y-m-d', $end - $i * 86400);
+            $labels[] = date('M j', strtotime($day));
+            $dayLogs = $logs->filter(function ($log) use ($day) {
+                $logDate = $log->log_date;
+                $dateStr = $logDate instanceof \Carbon\Carbon
+                    ? $logDate->format('Y-m-d')
+                    : (\is_string($logDate) ? $logDate : date('Y-m-d', strtotime($logDate)));
+                return $dateStr === $day;
+            });
+            $countData[] = $dayLogs->count();
+            $avg = $dayLogs->whereNotNull('adherence_score')->avg('adherence_score');
+            $adherenceData[] = $avg !== null ? round($avg, 0) : null;
+        }
 
         return [
             'labels' => $labels,
-            'ok' => $okData,
-            'warning' => $warningData,
-            'failed' => $failedData,
-            'donut' => $statusCounts,
+            'count' => $countData,
+            'adherence' => $adherenceData,
         ];
-    }
-
-    protected function applyDateFilter($query, Request $request): void
-    {
-        if ($request->filled('date_from')) {
-            $ts = strtotime($request->get('date_from') . ' 00:00:00');
-            if ($ts) {
-                $query->where('created_at', '>=', $ts);
-            }
-        }
-        if ($request->filled('date_to')) {
-            $ts = strtotime($request->get('date_to') . ' 23:59:59');
-            if ($ts) {
-                $query->where('created_at', '<=', $ts);
-            }
-        }
     }
 }

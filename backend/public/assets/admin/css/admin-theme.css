@@ -6,11 +6,15 @@
 /* ========== Variables ========== */
 :root {
     --admin-sidebar-bg: #1a1d24;
-    --admin-sidebar-text: #a0aec0;
-    --admin-sidebar-text-hover: #e2e8f0;
-    --admin-sidebar-active-bg: rgba(67, 212, 119, 0.15);
-    --admin-sidebar-active-border: var(--primary, #43d477);
-    --admin-sidebar-header: #718096;
+    --admin-sidebar-text: #b0b8c4;
+    --admin-sidebar-text-hover: #e8ecf0;
+    --admin-sidebar-active-bg: rgba(67, 212, 119, 0.18);
+    --admin-sidebar-active-text: #6ee7a7;
+    --admin-sidebar-active-border: #43d477;
+    --admin-sidebar-header: #8b95a5;
+    --admin-sidebar-dropdown-bg: #252931;
+    --admin-sidebar-dropdown-text: #c8d0dc;
+    --admin-sidebar-dropdown-hover: rgba(255, 255, 255, 0.08);
     --admin-content-bg: #f4f6f9;
     --admin-card-radius: 12px;
     --admin-navbar-height: 64px;
@@ -231,7 +235,7 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--admin-sidebar-header) !important;
-    opacity: 0.9;
+    opacity: 1;
 }
 
 .main-sidebar .sidebar-menu li.menu-header:not(:first-child) {
@@ -253,51 +257,58 @@
     width: 22px !important;
     margin-right: 12px !important;
     font-size: 15px;
-    opacity: 0.85;
+    opacity: 0.9;
 }
 
 .main-sidebar .sidebar-menu li a:hover {
-    background: rgba(255, 255, 255, 0.06) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
     color: var(--admin-sidebar-text-hover) !important;
 }
 
 .main-sidebar .sidebar-menu li a:hover i {
     opacity: 1;
+    color: inherit !important;
 }
 
 /* Active state */
 .main-sidebar .sidebar-menu li.active > a {
     background: var(--admin-sidebar-active-bg) !important;
-    color: var(--admin-sidebar-active-border) !important;
+    color: var(--admin-sidebar-active-text) !important;
     font-weight: 600;
     border-left: 3px solid var(--admin-sidebar-active-border);
     padding-left: 11px !important;
 }
 
 .main-sidebar .sidebar-menu li.active > a i {
-    color: var(--admin-sidebar-active-border) !important;
+    color: var(--admin-sidebar-active-text) !important;
     opacity: 1;
 }
 
-/* Dropdown arrow */
+/* Dropdown arrow – ensure visible on dark sidebar */
 .main-sidebar .sidebar-menu li a.has-dropdown:after {
-    opacity: 0.7;
+    color: var(--admin-sidebar-text) !important;
+    opacity: 0.9;
     font-size: 12px;
 }
 
-.main-sidebar .sidebar-menu li.active > a.has-dropdown:after {
-    color: var(--admin-sidebar-active-border);
+.main-sidebar .sidebar-menu li a.has-dropdown:hover:after {
+    color: var(--admin-sidebar-text-hover) !important;
     opacity: 1;
 }
 
-/* Dropdown submenu */
+.main-sidebar .sidebar-menu li.active > a.has-dropdown:after {
+    color: var(--admin-sidebar-active-text) !important;
+    opacity: 1;
+}
+
+/* Dropdown submenu – dark panel and visible text */
 .main-sidebar .sidebar-menu li ul.dropdown-menu {
-    background: rgba(0, 0, 0, 0.2) !important;
+    background: var(--admin-sidebar-dropdown-bg) !important;
     border: none !important;
     padding: 6px 0 6px 0 !important;
     margin: 4px 0 4px 20px !important;
     border-radius: 8px;
-    border-left: 1px solid rgba(255, 255, 255, 0.06);
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .main-sidebar .sidebar-menu li ul.dropdown-menu li a {
@@ -307,32 +318,36 @@
     margin: 0;
     border-radius: 6px;
     margin: 0 6px 2px;
+    background-color: transparent !important;
+    color: var(--admin-sidebar-dropdown-text) !important;
 }
 
 .main-sidebar .sidebar-menu li ul.dropdown-menu li a:hover {
-    background: rgba(255, 255, 255, 0.08) !important;
+    background: var(--admin-sidebar-dropdown-hover) !important;
+    color: var(--admin-sidebar-text-hover) !important;
 }
 
 .main-sidebar .sidebar-menu li ul.dropdown-menu li.active > a {
     background: var(--admin-sidebar-active-bg) !important;
-    color: var(--admin-sidebar-active-border) !important;
+    color: var(--admin-sidebar-active-text) !important;
     border-left: none;
     padding-left: 36px !important;
 }
 
+/* Keep dropdown panel dark when parent is active (was transparent – caused light/invisible submenu) */
 .main-sidebar .sidebar-menu li.active ul.dropdown-menu {
-    background: transparent !important;
+    background: var(--admin-sidebar-dropdown-bg) !important;
 }
 
 /* Logout link at bottom */
 .main-sidebar .sidebar-menu li:last-child a {
     margin-top: 8px;
-    color: #e53e3e !important;
+    color: #fc8181 !important;
 }
 
 .main-sidebar .sidebar-menu li:last-child a:hover {
-    background: rgba(229, 62, 62, 0.15) !important;
-    color: #fc8181 !important;
+    background: rgba(229, 62, 62, 0.2) !important;
+    color: #feb2b2 !important;
 }
 
 /* ========== Navbar (top bar) ========== */
@@ -432,6 +447,11 @@ body.sidebar-mini .main-sidebar .sidebar-menu li.active > a {
     border-left: none;
     border-radius: 10px;
     background: var(--admin-sidebar-active-bg) !important;
+    color: var(--admin-sidebar-active-text) !important;
+}
+
+body.sidebar-mini .main-sidebar .sidebar-menu li.active > a i {
+    color: var(--admin-sidebar-active-text) !important;
 }
 
 /* ========== Scrollbar in sidebar ========== */

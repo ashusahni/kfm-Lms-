@@ -27,10 +27,8 @@ class AdminAuthenticate
 
             if (auth()->user()->hasPermission('admin_notifications_list')) {
                 $adminUser = User::find(1);
-
-                $unreadNotifications = $adminUser->getUnReadNotifications();
-
-                view()->share('unreadNotifications', $unreadNotifications);
+                $unreadNotifications = $adminUser ? $adminUser->getUnReadNotifications() : collect();
+                view()->share('unreadNotifications', $unreadNotifications ?? collect());
             }
 
             $generalSettings = getGeneralSettings();

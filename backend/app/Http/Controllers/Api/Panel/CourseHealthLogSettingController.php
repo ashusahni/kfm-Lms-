@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 /**
  * Returns course health log settings for the frontend form (tracking notes, custom fields).
  * User should only request settings for courses they have access to (e.g. purchased).
+ * Contract: see HEALTH_LOG_SPEC.md (repo root). Keep in sync with frontend types and health service.
  */
 class CourseHealthLogSettingController extends Controller
 {

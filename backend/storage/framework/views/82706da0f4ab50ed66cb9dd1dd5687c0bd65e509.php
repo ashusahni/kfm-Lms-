@@ -24,15 +24,7 @@
 
         <?php echo $__env->make('admin.includes.navbar.currency', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-        <?php if(!empty(getAiContentsSettingsName("status")) and !empty(getAiContentsSettingsName("active_for_admin_panel"))): ?>
-            <div class="js-show-ai-content-drawer show-ai-content-drawer-btn d-flex-center mr-4">
-                <div class="d-flex-center size-32 rounded-circle bg-white">
-                    <img src="/assets/default/img/ai/ai-chip.svg" alt="ai" class="" width="16px" height="16px">
-                </div>
-                <span class="ml-1 font-weight-500 font-14"><?php echo e(trans('update.ai_content')); ?></span>
-            </div>
-        <?php endif; ?>
-
+        
 
         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('admin_notifications_list')): ?>
 
@@ -71,7 +63,7 @@
                     </div>
 
                     <div class="dropdown-list-content dropdown-list-icons">
-                        <?php $__currentLoopData = $unreadNotifications; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unreadNotification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php $__currentLoopData = $unreadNotifications ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unreadNotification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <a href="<?php echo e(getAdminPanelUrl()); ?>/notifications" class="dropdown-item">
                                 <div class="dropdown-item-icon bg-info text-white d-flex align-items-center justify-content-center">
                                     <i class="far fa-user"></i>

@@ -68,6 +68,9 @@ return [
 
     'ban_msg' => 'Your account banned until :date',
     'incorrect_login' => 'Incorrect username or password.',
+    'incorrect' => 'Incorrect email or phone number or password. Please try again.',
+    'banned_account' => 'Your account has been banned. Please contact support.',
+    'inactive_account' => 'Your account is not active. Please verify your email or phone to sign in.',
 
     'fail_login_by_google' => 'Google login failed!',
     'fail_login_by_facebook' => 'Facebook login failed!',
@@ -88,6 +91,8 @@ return [
 
     'login_failed_your_account_is_not_verified' => 'Login failed! Your email/phone not verified.',
     'logout' => 'Logout',
-    'phone' => 'Phone'
+    'phone' => 'Phone',
+
+    'unauthorized' => 'You are not authorized to perform this action. Please log in with a student account to save your daily health log.',
 
 ];

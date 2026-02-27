@@ -114,7 +114,8 @@ class NotificationsController extends Controller
                 'user' => function ($query) {
                     $query->select('id', 'full_name');
                 },
-                'group'
+                'group',
+                'webinar',
             ])->first();
 
         if (!empty($notification)) {

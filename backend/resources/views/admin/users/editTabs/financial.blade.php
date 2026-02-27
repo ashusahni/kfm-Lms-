@@ -79,6 +79,7 @@
                     <label for="verifySwitch">{{ trans('admin/main.financial_approval') }}</label>
                 </div>
 
+                {{-- Paid add-ons (installments, cashback, registration bonus) - Removed
                 <div class="form-group mb-0 d-flex align-items-center">
                     <div class="custom-control custom-switch d-block">
                         <input type="checkbox" name="enable_installments" class="custom-control-input" id="enableInstallmentsSwitch" {{ (($user->enable_installments) or (old('enable_installments') == 'on')) ? 'checked' : '' }}>
@@ -118,6 +119,10 @@
                            value="{{ !empty($user) ? $user->registration_bonus_amount : old('registration_bonus_amount') }}"
                            placeholder="{{ trans('update.user_registration_bonus_amount_placeholder') }}"/>
                 </div>
+                --}}
+                <input type="hidden" name="enable_installments" value="0">
+                <input type="hidden" name="installment_approval" value="0">
+                <input type="hidden" name="enable_registration_bonus" value="0">
 
                 <div class=" mt-4">
                     <button class="btn btn-primary">{{ trans('admin/main.submit') }}</button>

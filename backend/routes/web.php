@@ -51,10 +51,10 @@ Route::get('/emergencyDatabaseUpdate', function () {
 });
 
 Route::group(['namespace' => 'Auth', 'middleware' => ['check_mobile_app', 'share', 'check_maintenance']], function () {
-    Route::get('/login', function () { return view('spa'); });
+    Route::get('/login', function () { return spaOrRedirectToFrontend(); });
     Route::post('/login', 'LoginController@login');
     Route::get('/logout', 'LoginController@logout');
-    Route::get('/register', function () { return view('spa'); });
+    Route::get('/register', function () { return spaOrRedirectToFrontend(); });
     Route::post('/register', 'RegisterController@register');
     Route::post('/register/form-fields', 'RegisterController@getFormFieldsByUserType');
     Route::get('/verification', 'VerificationController@index');
@@ -68,7 +68,7 @@ Route::group(['namespace' => 'Auth', 'middleware' => ['check_mobile_app', 'share
     Route::get('/google/callback', 'SocialiteController@handleGoogleCallback');
     Route::get('/facebook/redirect', 'SocialiteController@redirectToFacebook');
     Route::get('/facebook/callback', 'SocialiteController@handleFacebookCallback');
-    Route::get('/reff/{code}', 'ReferralController@referral');
+    // Referral (paid add-on) - Removed: Route::get('/reff/{code}', 'ReferralController@referral');
 });
 
 Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impersonate', 'share', 'check_maintenance']], function () {
@@ -84,7 +84,24 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
             ->name('spa.catchall');
     }
 
-    Route::fallback(function () {
+    // When frontend runs on a separate URL (e.g. React on :8080), redirect app traffic there so only /admin and /api stay on this backend
+    $frontendUrl = config('frontend.url');
+
+    Route::fallback(function () use ($frontendUrl) {
+        if (request()->isMethod('GET') && !empty($frontendUrl) && !config('frontend.serve_react', false)) {
+            $path = request()->path();
+            $backendOnlyPrefixes = ['admin', 'api', 'my_api', 'api_sessions', 'emergencyDatabaseUpdate', 'mobile-app', 'maintenance', 'captcha', 'stripe'];
+            $isBackendOnly = false;
+            foreach ($backendOnlyPrefixes as $prefix) {
+                if ($path === $prefix || str_starts_with($path, $prefix . '/')) {
+                    $isBackendOnly = true;
+                    break;
+                }
+            }
+            if (!$isBackendOnly) {
+                return redirect()->away(rtrim($frontendUrl, '/') . '/' . $path . (request()->getQueryString() ? '?' . request()->getQueryString() : ''));
+            }
+        }
         return view("errors.404", ['pageTitle' => trans('public.error_404_page_title')]);
     });
 
@@ -95,13 +112,13 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
     Route::post('/set-currency', 'SetCurrencyController@setCurrency');
 
     Route::get('/', function () {
-        return view('spa');
+        return spaOrRedirectToFrontend();
     });
 
     Route::get('/getDefaultAvatar', 'DefaultAvatarController@make');
 
     Route::group(['prefix' => 'course'], function () {
-        Route::get('/{slug}', function () { return view('spa'); });
+        Route::get('/{slug}', function () { return spaOrRedirectToFrontend(); });
         Route::get('/{slug}/file/{file_id}/download', 'WebinarController@downloadFile');
         Route::get('/{slug}/file/{file_id}/showHtml', 'WebinarController@showHtmlFile');
         Route::get('/{slug}/lessons/{lesson_id}/read', 'WebinarController@getLesson');
@@ -113,8 +130,7 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
         Route::post('/{id}/learningStatus', 'WebinarController@learningStatus');
 
         Route::group(['middleware' => 'web.auth'], function () {
-            Route::get('/{slug}/installments', 'WebinarController@getInstallmentsByCourse');
-
+            // Installments (paid add-on) - Removed: Route::get('/{slug}/installments', ...);
             Route::post('/learning/itemInfo', 'LearningPageController@getItemInfo');
             Route::get('/learning/{slug}', 'LearningPageController@index');
             Route::get('/learning/{slug}/noticeboards', 'LearningPageController@noticeboards');
@@ -172,7 +188,7 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
         });
 
         Route::group(['prefix' => 'cart'], function () {
-            Route::get('/', function () { return view('spa'); });
+            Route::get('/', function () { return spaOrRedirectToFrontend(); });
 
             Route::post('/coupon/validate', 'CartController@couponValidate');
             Route::post('/checkout', 'CartController@checkout')->name('checkout');
@@ -217,32 +233,32 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
     });
 
     Route::group(['prefix' => 'search'], function () {
-        Route::get('/', function () { return view('spa'); });
+        Route::get('/', function () { return spaOrRedirectToFrontend(); });
     });
 
     Route::group(['prefix' => 'categories'], function () {
         Route::get('/{categoryTitle}/{subCategoryTitle?}', 'CategoriesController@index');
     });
 
-    Route::get('/classes', function () { return view('spa'); });
+    Route::get('/classes', function () { return spaOrRedirectToFrontend(); });
 
-    Route::get('/profile', function () { return view('spa'); });
+    Route::get('/profile', function () { return spaOrRedirectToFrontend(); });
 
     Route::get('/reward-courses', 'RewardCoursesController@index');
 
     Route::group(['prefix' => 'blog'], function () {
-        Route::get('/', function () { return view('spa'); });
+        Route::get('/', function () { return spaOrRedirectToFrontend(); });
         Route::get('/categories/{category}', 'BlogController@index');
-        Route::get('/{slug}', function () { return view('spa'); });
+        Route::get('/{slug}', function () { return spaOrRedirectToFrontend(); });
     });
 
     Route::group(['prefix' => 'contact'], function () {
-        Route::get('/', function () { return view('spa'); });
+        Route::get('/', function () { return spaOrRedirectToFrontend(); });
         Route::post('/store', 'ContactController@store');
     });
 
     Route::group(['prefix' => 'instructors'], function () {
-        Route::get('/', function () { return view('spa'); });
+        Route::get('/', function () { return spaOrRedirectToFrontend(); });
     });
 
     Route::group(['prefix' => 'organizations'], function () {
@@ -294,8 +310,8 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
     Route::get('/reward-products', 'RewardProductsController@index');
 
     Route::group(['prefix' => 'bundles'], function () {
-        Route::get('/', function () { return view('spa'); });
-        Route::get('/{slug}', function () { return view('spa'); });
+        Route::get('/', function () { return spaOrRedirectToFrontend(); });
+        Route::get('/{slug}', function () { return spaOrRedirectToFrontend(); });
         Route::get('/{slug}/free', 'BundleController@free');
 
         Route::group(['middleware' => 'web.auth'], function () {
@@ -326,13 +342,14 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
 
 
     Route::group(['prefix' => 'upcoming_courses'], function () {
-        Route::get('/', function () { return view('spa'); });
-        Route::get('{slug}', function () { return view('spa'); });
+        Route::get('/', function () { return spaOrRedirectToFrontend(); });
+        Route::get('{slug}', function () { return spaOrRedirectToFrontend(); });
         Route::get('{slug}/toggleFollow', 'UpcomingCoursesController@toggleFollow');
         Route::get('{slug}/favorite', 'UpcomingCoursesController@favorite');
         Route::post('{id}/report', 'UpcomingCoursesController@report');
     });
 
+    /* Installments, Waitlists, Gift (paid add-ons) - Removed
     Route::group(['prefix' => 'installments'], function () {
         Route::group(['middleware' => 'web.auth'], function () {
             Route::get('/request_submitted', 'InstallmentsController@requestSubmitted');
@@ -352,6 +369,7 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
             Route::post('/{item_type}/{item_slug}', 'GiftController@store');
         });
     });
+    */
 
     /* Forms */
     Route::get('/forms/{url}', 'FormsController@index');

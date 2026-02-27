@@ -53,3 +53,14 @@ In production, point the web server document root to **backend/public** (this di
 ## SPA routes
 
 Laravel serves the React app (from `public/spa/`) for: `/`, `/classes`, `/course/:slug`, `/bundles`, `/blog`, `/login`, `/register`, `/cart`, `/profile`, `/instructors`, `/upcoming_courses`, `/search`, `/contact`. See `routes/web.php`.
+
+## Performance (admin panel & general)
+
+- **APP_DEBUG:** Keep `APP_DEBUG=false` in production. When `true`, every request carries extra overhead and (if enabled) Laravel Debugbar can add several seconds per page. Debugbar is always disabled for admin panel routes.
+- **Config and route cache:** After deployment or config changes, run:
+  ```bash
+  php artisan config:cache
+  php artisan route:cache
+  ```
+  Clear with `php artisan config:clear` and `php artisan route:clear` when developing.
+- **OPcache:** Enable PHP OPcache on the server for faster PHP execution.

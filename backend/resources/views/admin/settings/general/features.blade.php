@@ -401,6 +401,7 @@
                 </div>
 
 
+                {{-- Cashback (paid add-on) - Removed
                 <div class="mb-5">
                     <h5>{{ trans('update.cashback') }}</h5>
 
@@ -430,9 +431,8 @@
                     </label>
                     <div class="text-muted text-small mt-1">Paid Plugin</div>
                 </div>
-                   
-               
                 </div>
+                --}}
 
                 <div class="mb-5">
                     <h5>{{ trans('update.session_api') }}</h5>
@@ -505,6 +505,7 @@
 
                 </div>
 
+                {{-- Enable waitlist (paid add-on) - Removed
                 <div class="mb-5">
                     <h5>{{ trans('update.enable_waitlist') }}</h5>
 
@@ -519,6 +520,7 @@
                 </div>
 
                 </div>
+                --}}
 
                 <div class="mb-5">
                     <h5>{{ trans('update.enable_upcoming_courses') }}</h5>

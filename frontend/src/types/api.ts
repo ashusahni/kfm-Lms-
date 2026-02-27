@@ -225,7 +225,7 @@ export interface LoginData {
   profile_completion?: string[];
 }
 
-/** Health log meal entry */
+/** Health log meal entry – keep in sync with backend (HEALTH_LOG_SPEC.md) */
 export interface HealthLogMeal {
   type?: string;
   name?: string;
@@ -234,7 +234,7 @@ export interface HealthLogMeal {
   notes?: string;
 }
 
-/** Daily health log (Fit Karnataka) */
+/** Daily health log (Fit Karnataka) – keep in sync with backend StudentDailyHealthLog (HEALTH_LOG_SPEC.md) */
 export interface HealthLog {
   id: number;
   user_id: number;
@@ -258,6 +258,7 @@ export interface HealthLog {
   webinar?: { id: number; title: string };
 }
 
+/** Create/update payload for health log – must match backend store validation (HEALTH_LOG_SPEC.md) */
 export interface HealthLogCreatePayload {
   log_date: string;
   webinar_id?: number | null;
@@ -349,7 +350,7 @@ export interface ContentItemBrief {
   text_lesson_id?: number;
 }
 
-/** Course health log setting – what to track for a course (from description / admin) */
+/** Course health log setting – what to track for a course (from description / admin). Sync with backend (HEALTH_LOG_SPEC.md). */
 export interface CourseHealthLogSetting {
   webinar_id: number;
   enable_health_log: boolean;

@@ -30,7 +30,6 @@
             <?php endif; ?>
 
             <?php if($authUser->can('admin_webinars') or
-                $authUser->can('admin_quizzes') or
                 $authUser->can('admin_reviews_lists') or
                 $authUser->can('admin_webinar_assignments') or
                 $authUser->can('admin_enrollment')
@@ -72,15 +71,6 @@
                         <?php endif; ?>
 
                     </ul>
-                </li>
-            <?php endif; ?>
-
-            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('admin_quizzes')): ?>
-                <li class="<?php echo e((request()->is(getAdminPanelUrl('/quizzes*', false))) ? 'active' : ''); ?>">
-                    <a class="nav-link " href="<?php echo e(getAdminPanelUrl()); ?>/quizzes">
-                        <i class="fas fa-file"></i>
-                        <span><?php echo e(trans('admin/main.quizzes')); ?></span>
-                    </a>
                 </li>
             <?php endif; ?>
 
@@ -410,9 +400,7 @@
 
             <?php if($authUser->can('admin_documents') or
                 $authUser->can('admin_sales_list') or
-                $authUser->can('admin_payouts') or
-                $authUser->can('admin_offline_payments_list') or
-                $authUser->can('admin_subscribe')
+                $authUser->can('admin_payouts')
             ): ?>
                 <li class="menu-header"><?php echo e(trans('admin/main.financial')); ?></li>
             <?php endif; ?>
@@ -472,54 +460,12 @@
                 </li>
             <?php endif; ?>
 
-            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('admin_offline_payments_list')): ?>
-                <li class="nav-item dropdown <?php echo e((request()->is(getAdminPanelUrl('/financial/offline_payments*', false))) ? 'active' : ''); ?>">
-                    <a href="#" class="nav-link has-dropdown"><i class="fas fa-university"></i> <span><?php echo e(trans('admin/main.offline_payments')); ?></span></a>
-                    <ul class="dropdown-menu">
-                        <li class="<?php echo e((request()->is(getAdminPanelUrl('/financial/offline_payments', false)) and request()->get('page_type') == 'requests') ? 'active' : ''); ?>">
-                            <a href="<?php echo e(getAdminPanelUrl()); ?>/financial/offline_payments?page_type=requests" class="nav-link <?php if(!empty($sidebarBeeps['offlinePayments']) and $sidebarBeeps['offlinePayments']): ?> beep beep-sidebar <?php endif; ?>">
-                                <span><?php echo e(trans('panel.requests')); ?></span>
-                            </a>
-                        </li>
-
-                        <li class="<?php echo e((request()->is(getAdminPanelUrl('/financial/offline_payments', false)) and request()->get('page_type') == 'history') ? 'active' : ''); ?>">
-                            <a href="<?php echo e(getAdminPanelUrl()); ?>/financial/offline_payments?page_type=history" class="nav-link">
-                                <span><?php echo e(trans('public.history')); ?></span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            <?php endif; ?>
-
-            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('admin_subscribe')): ?>
-                <li class="nav-item dropdown <?php echo e((request()->is(getAdminPanelUrl('/financial/subscribes*', false))) ? 'active' : ''); ?>">
-                    <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
-                        <i class="fas fa-cart-plus"></i>
-                        <span><?php echo e(trans('admin/main.subscribes')); ?></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('admin_subscribe_list')): ?>
-                            <li class="<?php echo e((request()->is(getAdminPanelUrl('/financial/subscribes', false))) ? 'active' : ''); ?>">
-                                <a class="nav-link" href="<?php echo e(getAdminPanelUrl()); ?>/financial/subscribes"><?php echo e(trans('admin/main.packages')); ?></a>
-                            </li>
-                        <?php endif; ?>
-
-                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('admin_subscribe_create')): ?>
-                            <li class="<?php echo e((request()->is(getAdminPanelUrl('/financial/subscribes/new', false))) ? 'active' : ''); ?>">
-                                <a class="nav-link" href="<?php echo e(getAdminPanelUrl()); ?>/financial/subscribes/new"><?php echo e(trans('admin/main.new_package')); ?></a>
-                            </li>
-                        <?php endif; ?>
-                    </ul>
-                </li>
-            <?php endif; ?>
-
-
             <?php if($authUser->can('admin_settings')): ?>
                 <li class="menu-header"><?php echo e(trans('admin/main.settings')); ?></li>
             <?php endif; ?>
 
             <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('admin_general_dashboard_show')): ?>
-                <li class="<?php echo e((request()->is(getAdminPanelUrl('/health-log*', false)) and !request()->is(getAdminPanelUrl('/course-health-log-settings*', false)) and !request()->is(getAdminPanelUrl('/student-health-logs*', false))) ? 'active' : ''); ?>">
+                <li class="<?php echo e((request()->is(getAdminPanelUrl('/health-log*', false)) and !request()->is(getAdminPanelUrl('/course-health-log-settings*', false)) and !request()->is(getAdminPanelUrl('/student-health-logs*', false)) and !request()->is(getAdminPanelUrl('/system-health*', false))) ? 'active' : ''); ?>">
                     <a href="<?php echo e(getAdminPanelUrl()); ?>/health-log" class="nav-link">
                         <i class="fas fa-heartbeat"></i>
                         <span><?php echo e(trans('admin/main.health_log') ?? 'Health Log'); ?></span>
@@ -531,10 +477,16 @@
                         <span><?php echo e(trans('admin/main.course_health_log_settings') ?? 'Course health log settings'); ?></span>
                     </a>
                 </li>
-                <li class="<?php echo e((request()->is(getAdminPanelUrl('/student-health-logs*', false))) ? 'active' : ''); ?>">
-                    <a href="<?php echo e(getAdminPanelUrl()); ?>/student-health-logs" class="nav-link">
+                <li class="<?php echo e((request()->is(getAdminPanelUrl('/student-health-logs*', false)) or (request()->is(getAdminPanelUrl('/health-log*', false)) and !request()->is(getAdminPanelUrl('/course-health-log-settings*', false)) and !request()->is(getAdminPanelUrl('/system-health*', false)))) ? 'active' : ''); ?>">
+                    <a href="<?php echo e(getAdminPanelUrl()); ?>/health-log" class="nav-link">
                         <i class="fas fa-clipboard-list"></i>
                         <span><?php echo e(trans('admin/main.student_health_logs') ?? 'Student health logs'); ?></span>
+                    </a>
+                </li>
+                <li class="<?php echo e((request()->is(getAdminPanelUrl('/system-health*', false))) ? 'active' : ''); ?>">
+                    <a href="<?php echo e(getAdminPanelUrl()); ?>/system-health" class="nav-link">
+                        <i class="fas fa-server"></i>
+                        <span><?php echo e(trans('admin/main.system_health') ?? 'System health'); ?></span>
                     </a>
                 </li>
             <?php endif; ?>

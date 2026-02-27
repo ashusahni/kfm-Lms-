@@ -77,6 +77,7 @@ Route::group([], function () {
         Route::get('/{id}', ['uses' => 'ReserveMeetingsController@show']);
 
     });
+    /* Rewards (paid add-on) - Removed
     Route::group(['prefix' => '/rewards'], function () {
 
         Route::get('/', ['uses' => 'RewardsController@index']);
@@ -86,6 +87,8 @@ Route::group([], function () {
         Route::get('/reward-courses', ['uses' => 'RewardsController@courses']);
 
     });
+    */
+
     Route::group(['prefix' => '/registration-packages', 'middleware' => ['api.level-access:teacher']], function () {
 
         Route::get('/', ['uses' => 'RegistrationPackagesController@index']);

@@ -15,6 +15,10 @@ import {
   Headphones,
   MessageCircle,
   Award,
+  Droplets,
+  Utensils,
+  Activity,
+  ClipboardList,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -22,6 +26,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format, startOfDay, subDays } from "date-fns";
+import type { HealthLog } from "@/types/api";
+
+function normalizeLogDate(log: HealthLog): string {
+  const d = log.log_date;
+  if (typeof d === "number") return format(new Date(d * 1000), "yyyy-MM-dd");
+  try {
+    return format(new Date(d), "yyyy-MM-dd");
+  } catch {
+    return "";
+  }
+}
 
 function useDashboardData() {
   const quickInfo = useQuery({
@@ -42,9 +57,14 @@ function useDashboardData() {
     queryFn: () => programsService.getMyAssignments(),
   });
 
-  const logs = healthLogs.data?.data ?? [];
+  const rawList = healthLogs.data;
+  const logs: HealthLog[] = Array.isArray(rawList)
+    ? rawList
+    : (rawList && typeof rawList === "object" && "data" in rawList && Array.isArray((rawList as { data: unknown[] }).data)
+      ? (rawList as { data: HealthLog[] }).data
+      : []);
   const todayStr = format(new Date(), "yyyy-MM-dd");
-  const todayLog = logs.find((l) => l.log_date === todayStr);
+  const todayLog = logs.find((l) => normalizeLogDate(l) === todayStr);
   const last7 = logs.slice(0, 7);
   const adherence7 =
     last7.length > 0
@@ -54,10 +74,10 @@ function useDashboardData() {
       : 0;
   let streak = 0;
   const sortedByDate = [...logs].sort(
-    (a, b) => new Date(b.log_date).getTime() - new Date(a.log_date).getTime()
+    (a, b) => new Date(normalizeLogDate(b)).getTime() - new Date(normalizeLogDate(a)).getTime()
   );
   for (const log of sortedByDate) {
-    const d = format(startOfDay(new Date(log.log_date)), "yyyy-MM-dd");
+    const d = normalizeLogDate(log);
     const expected = format(subDays(new Date(), streak), "yyyy-MM-dd");
     if (d === expected && ((log.water_ml ?? 0) > 0 || (log.calories ?? 0) > 0)) streak++;
     else break;
@@ -80,6 +100,7 @@ function useDashboardData() {
     streak,
     assignments: Array.isArray(assignments.data) ? assignments.data : [],
     assignmentsLoading: assignments.isLoading,
+    healthLogs,
   };
 }
 
@@ -105,6 +126,7 @@ export default function Dashboard() {
     eventCount,
     assignments,
     assignmentsLoading,
+    healthLogs,
   } = useDashboardData();
 
   const todayChallenge = assignments[0];
@@ -242,6 +264,92 @@ export default function Dashboard() {
                 <p className="text-muted-foreground text-sm">
                   No challenge for today. Keep up your daily log!
                 </p>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Today's Health Log – backend fields (water_ml, calories, activity_minutes, adherence_score) */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.08 }}
+        >
+          <Card className="border border-border h-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium flex items-center gap-2">
+                <ClipboardList size={18} className="text-primary" />
+                Today&apos;s Health Log
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {healthLogs.isLoading ? (
+                <div className="space-y-2">
+                  <Skeleton className="h-5 w-full rounded" />
+                  <Skeleton className="h-8 w-20 rounded" />
+                </div>
+              ) : todayLog ? (
+                <>
+                  <div className="space-y-1.5 text-sm">
+                    {todayLog.water_ml != null && todayLog.water_ml > 0 && (
+                      <p className="flex items-center gap-2 text-foreground">
+                        <Droplets size={14} className="text-primary shrink-0" />
+                        Water: {todayLog.water_ml} ml
+                      </p>
+                    )}
+                    {todayLog.calories != null && todayLog.calories > 0 && (
+                      <p className="flex items-center gap-2 text-foreground">
+                        <Utensils size={14} className="text-primary shrink-0" />
+                        Calories: {todayLog.calories} cal
+                      </p>
+                    )}
+                    {(todayLog.protein != null && todayLog.protein > 0) ||
+                    (todayLog.carbs != null && todayLog.carbs > 0) ||
+                    (todayLog.fat != null && todayLog.fat > 0) ? (
+                      <p className="text-muted-foreground">
+                        P: {todayLog.protein ?? 0} · C: {todayLog.carbs ?? 0} · F: {todayLog.fat ?? 0}
+                      </p>
+                    ) : null}
+                    {todayLog.activity_minutes != null && todayLog.activity_minutes > 0 && (
+                      <p className="flex items-center gap-2 text-foreground">
+                        <Activity size={14} className="text-primary shrink-0" />
+                        Activity: {todayLog.activity_minutes} min
+                      </p>
+                    )}
+                    {todayLog.adherence_score != null && (
+                      <p className="font-medium text-primary mt-1">
+                        Adherence: {todayLog.adherence_score}%
+                      </p>
+                    )}
+                    {todayLog.webinar?.title && (
+                      <p className="text-xs text-muted-foreground truncate" title={todayLog.webinar.title}>
+                        {todayLog.webinar.title}
+                      </p>
+                    )}
+                  </div>
+                  <Link to={`/panel/health-log/edit/${todayLog.id}`}>
+                    <Button variant="outline" size="sm" className="mt-3">
+                      View / Edit log
+                    </Button>
+                  </Link>
+                  <Link to="/panel/health-log" className="block text-sm text-muted-foreground hover:text-foreground mt-2">
+                    See all logs
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <p className="text-muted-foreground text-sm mb-2">
+                    You haven&apos;t logged for {todayStr}. Log water, calories, and activity to keep your streak.
+                  </p>
+                  <Link to="/panel/health-log/new">
+                    <Button size="sm" className="bg-gradient-cta text-primary-foreground">
+                      Log your day
+                    </Button>
+                  </Link>
+                  <Link to="/panel/health-log" className="block text-sm text-muted-foreground hover:text-foreground mt-2">
+                    See all logs
+                  </Link>
+                </>
               )}
             </CardContent>
           </Card>

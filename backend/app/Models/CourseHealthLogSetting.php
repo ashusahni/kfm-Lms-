@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Per-course health log configuration: tracking notes (from description) and optional custom fields.
+ * Contract: see HEALTH_LOG_SPEC.md (repo root). Keep in sync with frontend CourseHealthLogSetting type.
  */
 class CourseHealthLogSetting extends Model
 {

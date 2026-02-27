@@ -24,6 +24,7 @@
 
         @include('admin.includes.navbar.currency')
 
+        {{-- AI Content (paid add-on) - Removed
         @if(!empty(getAiContentsSettingsName("status")) and !empty(getAiContentsSettingsName("active_for_admin_panel")))
             <div class="js-show-ai-content-drawer show-ai-content-drawer-btn d-flex-center mr-4">
                 <div class="d-flex-center size-32 rounded-circle bg-white">
@@ -32,7 +33,7 @@
                 <span class="ml-1 font-weight-500 font-14">{{ trans('update.ai_content') }}</span>
             </div>
         @endif
-
+        --}}
 
         @can('admin_notifications_list')
 
@@ -70,7 +71,7 @@
                     </div>
 
                     <div class="dropdown-list-content dropdown-list-icons">
-                        @foreach($unreadNotifications as $unreadNotification)
+                        @foreach($unreadNotifications ?? [] as $unreadNotification)
                             <a href="{{ getAdminPanelUrl() }}/notifications" class="dropdown-item">
                                 <div class="dropdown-item-icon bg-info text-white d-flex align-items-center justify-content-center">
                                     <i class="far fa-user"></i>

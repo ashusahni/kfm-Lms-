@@ -41,12 +41,19 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
 
         Route::group(['prefix' => 'health-log'], function () {
             Route::get('/', 'HealthLogController@index');
-            Route::post('/run-check', 'HealthLogController@runCheck');
             Route::get('/export/csv', 'HealthLogController@exportCsv');
             Route::get('/export/json', 'HealthLogController@exportJson');
-            Route::get('/api/list', 'HealthLogController@indexApi');
-            Route::get('/api/{id}', 'HealthLogController@showApi');
             Route::get('/{id}', 'HealthLogController@show');
+        });
+
+        Route::group(['prefix' => 'system-health'], function () {
+            Route::get('/', 'SystemHealthController@index');
+            Route::post('/run-check', 'SystemHealthController@runCheck');
+            Route::get('/export/csv', 'SystemHealthController@exportCsv');
+            Route::get('/export/json', 'SystemHealthController@exportJson');
+            Route::get('/api/list', 'SystemHealthController@indexApi');
+            Route::get('/api/{id}', 'SystemHealthController@showApi');
+            Route::get('/{id}', 'SystemHealthController@show');
         });
 
         Route::group(['prefix' => 'course-health-log-settings'], function () {
@@ -56,9 +63,10 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
         });
 
         Route::group(['prefix' => 'student-health-logs'], function () {
-            Route::get('/', 'StudentDailyHealthLogAdminController@index');
-            Route::get('/export/csv', 'StudentDailyHealthLogAdminController@exportCsv');
-            Route::get('/{id}', 'StudentDailyHealthLogAdminController@show');
+            Route::get('/', function () { return redirect(getAdminPanelUrl() . '/health-log'); });
+            Route::get('/export/csv', 'HealthLogController@exportCsv');
+            Route::get('/export/json', 'HealthLogController@exportJson');
+            Route::get('/{id}', 'HealthLogController@show');
         });
 
         Route::group(['prefix' => 'roles'], function () {
@@ -106,9 +114,10 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/{id}/delete', 'UserController@destroy');
             Route::get('/{id}/acceptRequestToInstructor', 'UserController@acceptRequestToInstructor');
             Route::get('/{user_id}/impersonate', 'UserController@impersonate');
-            Route::get('/{user_id}/disable_cashback_toggle', 'UserController@disableCashbackToggle');
-            Route::get('/{user_id}/disable_registration_bonus', 'UserController@disableRegitrationBonusStatus');
-            Route::get('/{user_id}/disable_installment_approval', 'UserController@disableInstallmentApproval');
+            // Paid add-on: removed
+            // Route::get('/{user_id}/disable_cashback_toggle', 'UserController@disableCashbackToggle');
+            // Route::get('/{user_id}/disable_registration_bonus', 'UserController@disableRegitrationBonusStatus');
+            // Route::get('/{user_id}/disable_installment_approval', 'UserController@disableInstallmentApproval');
 
             Route::group(['prefix' => 'badges'], function () {
                 Route::get('/', 'BadgesController@index');
@@ -308,6 +317,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
 
             Route::get('/course_forums', 'CourseForumsControllers@index');
 
+            /* Course forums (paid add-on) - Removed
             Route::group(['prefix' => '{webinar_id}/forums'], function () {
                 Route::get('/', 'CourseForumsControllers@forums');
                 Route::get('/{forum_id}/edit', 'CourseForumsControllers@forumEdit');
@@ -318,6 +328,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
                 Route::get('/{forum_id}/answers/{id}/delete', 'CourseForumsControllers@answerDelete');
                 Route::post('/{forum_id}/answers/{id}/edit', 'CourseForumsControllers@answerUpdate');
             });
+            */
         });
 
         Route::group(['prefix' => 'quizzes'], function () {
@@ -563,6 +574,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
                 Route::get('/reports', 'RegistrationPackagesController@reports');
             });
 
+            /* Installments (paid add-on) - Removed
             Route::group(['prefix' => 'installments'], function () {
                 Route::get('/', 'InstallmentsController@index');
                 Route::get('/create', 'InstallmentsController@create');
@@ -599,6 +611,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
                 Route::get('/verified_users', 'InstallmentsController@verifiedUsers');
                 Route::get('/verified_users/export', 'InstallmentsController@verifiedUsersExportExcel');
             });
+            */
         });
 
         Route::group(['prefix' => 'newsletters'], function () {
@@ -610,11 +623,13 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/excel', 'NewslettersController@exportExcel');
         });
 
+        /* Referrals (paid add-on) - Removed
         Route::group(['prefix' => 'referrals'], function () {
             Route::get('/history', 'ReferralController@history');
             Route::get('/users', 'ReferralController@users');
             Route::get('/excel', 'ReferralController@exportExcel');
         });
+        */
 
         Route::group(['prefix' => 'additional_page'], function () {
             Route::group(['prefix' => '/navbar_links'], function () {
@@ -759,6 +774,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/{pageType}', 'RegionController@index');
         });
 
+        /* Rewards (paid add-on) - Removed
         Route::group(['prefix' => 'rewards'], function () {
             Route::get('/', 'RewardController@index');
             Route::get('/items', 'RewardController@create');
@@ -769,7 +785,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/settings', 'RewardController@settings');
             Route::post('/settings', 'RewardController@storeSettings');
         });
-
+        */
         /* Store - Removed
         Route::group(['prefix' => 'store', 'namespace' => 'Store'], function () {
             ...
@@ -804,6 +820,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
         });
         */
 
+        /* Featured / recommended topics (forum paid add-on) - Removed
         Route::group(['prefix' => 'featured-topics'], function () {
             Route::get('/', 'FeaturedTopicsController@index');
             Route::get('/create', 'FeaturedTopicsController@create');
@@ -821,6 +838,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::post('/{id}/update', 'RecommendedTopicsController@update');
             Route::get('/{id}/delete', 'RecommendedTopicsController@destroy');
         });
+        */
 
         Route::group(['prefix' => 'enrollments'], function () {
             Route::get('/history', 'EnrollmentController@history');
@@ -852,6 +870,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/excel', 'UpcomingCoursesController@exportExcel');
         });
 
+        /* Registration bonus (paid add-on) - Removed
         Route::group(['prefix' => 'registration_bonus'], function () {
             Route::get('/history', 'RegistrationBonusController@index');
             Route::get('/export', 'RegistrationBonusController@exportExcel');
@@ -861,7 +880,9 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
                 Route::post('/', 'RegistrationBonusController@storeSettings');
             });
         });
+        */
 
+        /* Cashback (paid add-on) - Removed
         Route::group(['prefix' => 'cashback'], function () {
 
             Route::get('/history', 'CashbackTransactionsController@history');
@@ -888,8 +909,9 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
                 Route::get('/{id}/statusToggle', 'CashbackRuleController@statusToggle');
             });
         });
+        */
 
-
+        /* Waitlists (paid add-on) - Removed
         Route::group(['prefix' => 'waitlists'], function () {
             Route::get('/', 'WaitlistController@index');
             Route::get('/export', 'WaitlistController@exportExcel');
@@ -902,8 +924,9 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
                 Route::get('/{id}/delete', 'WaitlistController@deleteWaitlistItems');
             });
         });
+        */
 
-
+        /* Gifts (paid add-on) - Removed
         Route::group(['prefix' => 'gifts'], function () {
             Route::get('/', 'GiftsController@index');
             Route::get('/{id}/send_reminder', 'GiftsController@sendReminder');
@@ -916,7 +939,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
                 Route::post('/', 'GiftsController@storeSettings');
             });
         });
-
+        */
 
         /* Forms */
         Route::group(['prefix' => 'forms'], function () {
@@ -950,6 +973,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
 
         });
 
+        /* AI Contents (paid add-on) - Removed
         Route::group(['prefix' => 'ai-contents'], function () {
             Route::get('/lists', 'AIContentsController@index');
             Route::get('/{id}/delete', 'AIContentsController@delete');
@@ -967,6 +991,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             });
 
         });
+        */
 
         /* End Admin Middleware */
     });

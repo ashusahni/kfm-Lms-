@@ -77,10 +77,6 @@
 </div>
 
 
-<?php if(!empty(getAiContentsSettingsName("status")) and !empty(getAiContentsSettingsName("active_for_admin_panel"))): ?>
-    <?php echo $__env->make('admin.includes.aiContent.generator', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-<?php endif; ?>
-
 
 <!-- General JS Scripts -->
 <script src="/assets/admin/vendor/jquery/jquery-3.3.1.min.js"></script>
@@ -145,7 +141,7 @@
 </script>
 
 <script src="/assets/admin/js/custom.js"></script>
-<script src="/assets/default/js/panel/ai-content-generator.min.js"></script>
+
 
 <script>
     (function () {

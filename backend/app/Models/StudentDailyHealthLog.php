@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Fit Karnataka: Daily Health Challenge – student's log per day (optionally per program).
+ * Contract: see HEALTH_LOG_SPEC.md (repo root). New fillable/casts must be reflected in frontend types and API validation.
  */
 class StudentDailyHealthLog extends Model
 {
@@ -36,8 +37,8 @@ class StudentDailyHealthLog extends Model
 
     protected $casts = [
         'meals' => 'array',
-        'log_date' => 'date',
         'custom_data' => 'array',
+        'log_date' => 'date',
     ];
 
     public function user()

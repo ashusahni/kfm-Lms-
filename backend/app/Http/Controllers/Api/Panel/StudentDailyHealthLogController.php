@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api\Panel;
 use App\Http\Controllers\Controller;
 use App\Models\StudentDailyHealthLog;
 use App\Models\Webinar;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 /**
  * Fit Karnataka: Daily Health Challenge – student log CRUD, instructor/admin read-only.
+ * Contract: see HEALTH_LOG_SPEC.md (repo root). Any new field/endpoint must be added in both backend and frontend and the spec updated.
  */
 class StudentDailyHealthLogController extends Controller
 {
@@ -19,7 +21,7 @@ class StudentDailyHealthLogController extends Controller
             return apiResponse2(0, 'unauthorized', trans('auth.unauthorized'));
         }
 
-        $query = StudentDailyHealthLog::with(['user:id,full_name,avatar', 'webinar:id,title'])
+        $query = StudentDailyHealthLog::with(['user:id,full_name,avatar', 'webinar'])
             ->orderBy('log_date', 'desc');
 
         if ($user->isUser()) {
@@ -51,12 +53,15 @@ class StudentDailyHealthLogController extends Controller
     public function store(Request $request)
     {
         $user = apiAuth();
-        if (!$user || !$user->isUser()) {
+        if (!$user) {
+            return apiResponse2(0, 'unauthorized', trans('auth.unauthorized'));
+        }
+        if (!$user->isUser()) {
             return apiResponse2(0, 'unauthorized', trans('auth.unauthorized'));
         }
 
         $request->validate([
-            'log_date' => 'required|date',
+            'log_date' => 'required', // date string (Y-m-d) or Unix timestamp accepted
             'webinar_id' => 'nullable|exists:webinars,id',
             'water_ml' => 'nullable|integer|min:0',
             'meals' => 'nullable|array',
@@ -71,7 +76,12 @@ class StudentDailyHealthLogController extends Controller
             'custom_data' => 'nullable|array',
         ]);
 
-        $logDate = $request->log_date;
+        $logDateRaw = $request->log_date;
+        // DB column is DATE (Y-m-d). Normalize: accept Unix timestamp or date string.
+        $logDate = $this->normalizeLogDate($logDateRaw);
+        if (!$logDate) {
+            return apiResponse2(0, 'invalid_date', 'Invalid log_date. Use Y-m-d (e.g. 2026-02-27) or Unix timestamp.');
+        }
         $webinarId = $request->webinar_id ?: null;
 
         $log = StudentDailyHealthLog::firstOrNew([
@@ -97,11 +107,32 @@ class StudentDailyHealthLogController extends Controller
         if ($request->has('custom_data') && is_array($request->custom_data)) {
             $log->custom_data = $request->custom_data;
         }
-        $log->created_at = $log->created_at ?: time();
-        $log->updated_at = time();
         $log->save();
 
         return apiResponse2(1, 'saved', 'OK', $log->fresh(['user', 'webinar']));
+    }
+
+    /**
+     * Normalize log_date to Y-m-d for MySQL DATE column.
+     * Accepts: Unix timestamp (int or string of digits) or date string (Y-m-d, etc).
+     */
+    private function normalizeLogDate($value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+        if (is_numeric($value)) {
+            $ts = (int) $value;
+            if ($ts <= 0) {
+                return null;
+            }
+            return Carbon::createFromTimestamp($ts)->format('Y-m-d');
+        }
+        try {
+            return Carbon::parse($value)->format('Y-m-d');
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 
     public function show($id)
@@ -111,7 +142,7 @@ class StudentDailyHealthLogController extends Controller
             return apiResponse2(0, 'unauthorized', trans('auth.unauthorized'));
         }
 
-        $log = StudentDailyHealthLog::with(['user:id,full_name,avatar', 'webinar:id,title'])->find($id);
+        $log = StudentDailyHealthLog::with(['user:id,full_name,avatar', 'webinar'])->find($id);
         if (!$log) {
             return apiResponse2(0, 'not_found', 'Log not found.');
         }
