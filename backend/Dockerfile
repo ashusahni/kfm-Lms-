@@ -43,6 +43,9 @@ COPY --from=composer /app .
 COPY docker/start.sh /start.sh
 RUN chmod +x /start.sh
 
+# Remove cached package discovery so production re-discovers (avoids loading dev-only Collision/Ignition)
+RUN rm -f bootstrap/cache/packages.php bootstrap/cache/services.php
+
 # Laravel storage and cache must be writable
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
