@@ -1,35 +1,59 @@
-#!/bin/sh
-set -e
+# ---- Composer ----
+# Use same patched PHP Alpine base as runtime (no composer:2 image = no extra vulnerabilities)
+FROM php:8.2.29-cli-alpine AS composer
+RUN apk add --no-cache git unzip curl \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --ignore-platform-reqs
+COPY . .
+RUN composer dump-autoload --optimize --no-scripts
 
-echo "----------------------------------------"
-echo "Starting Laravel application..."
-echo "----------------------------------------"
+# ---- Runtime ----
+# Pin to patch version for security updates (8.2.29+ includes CVE fixes for PHP/pgsql/curl)
+FROM php:8.2.29-fpm-alpine AS runtime
+# Update index and upgrade existing packages to reduce vulnerabilities, then add deps
+RUN apk update && apk upgrade --no-cache \
+    && apk add --no-cache \
+    nginx \
+    libzip-dev \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
+    icu-dev \
+    oniguruma-dev \
+    postgresql-dev \
+    linux-headers \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
+        zip \
+        pdo \
+        pdo_mysql \
+        pdo_pgsql \
+        bcmath \
+        gd \
+        intl \
+        opcache \
+        exif
 
-# Wait a few seconds to ensure database is ready
-echo "Waiting for database connection..."
-sleep 5
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+WORKDIR /var/www/html
+COPY --from=composer /app .
 
-# Run database migrations
-echo "Running migrations..."
-php artisan migrate --force || true
+# Remove cached package discovery so Laravel re-discovers (avoids CollisionServiceProvider / dev deps)
+RUN rm -f bootstrap/cache/packages.php bootstrap/cache/services.php
 
-# Clear and cache config (prevents cached local configs)
-echo "Clearing and caching configuration..."
-php artisan config:clear
-php artisan cache:clear
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+COPY docker/start.sh /start.sh
+RUN chmod +x /start.sh
 
-# Fix storage permissions (just in case)
-echo "Fixing permissions..."
-chown -R www-data:www-data storage bootstrap/cache || true
-chmod -R 775 storage bootstrap/cache || true
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
 
-# Start PHP-FPM in background
-echo "Starting PHP-FPM..."
-php-fpm -D
+ENV PORT=8080
+EXPOSE 8080
 
-# Start Nginx in foreground (keeps container alive)
-echo "Starting Nginx..."
-nginx -g "daemon off;"
+# Optional: Render can use this to know when the app is ready
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+    CMD ["/bin/sh", "-c", "curl -sf http://127.0.0.1:${PORT}/up | grep -q '\"status\"' || exit 1"]
+
+CMD ["/start.sh"]
