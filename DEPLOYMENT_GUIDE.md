@@ -141,6 +141,8 @@ Optional but recommended:
 
 You can leave `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` unset when using `DATABASE_URL`; Laravel will parse the URL.
 
+**Render database:** You do **not** need to change any config inside the Render PostgreSQL database itself. Only set `DB_CONNECTION` and `DATABASE_URL` on the **backend Web Service** (Environment tab). The database stays as created in Part 1.
+
 ### Step 2.3 – Deploy backend
 
 1. Click **Create Web Service**.  

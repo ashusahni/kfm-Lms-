@@ -38,22 +38,28 @@ class AuthServiceProvider extends ServiceProvider
 
         $this->registerPolicies();
 
-        // Only load sections when table exists (e.g. after migrations run; avoids 500 on fresh deploy)
-        if (!Schema::hasTable('sections')) {
-            return;
+        // Load section-based gates only when the sections table exists and is reachable (avoids 500 on fresh deploy or missing migrations)
+        try {
+            if (!Schema::hasTable('sections')) {
+                return;
+            }
+        } catch (\Throwable $e) {
+            return; // DB not ready or connection failed; skip gates
         }
 
-        $minutes = 60 * 60; // 1 hour
-        $sections = Cache::remember('sections', $minutes, function () {
-            return Section::all();
-        });
-
-        $scopes = [];
-        foreach ($sections as $section) {
-            $scopes[$section->name] = $section->caption;
-            Gate::define($section->name, function ($user) use ($section) {
-                return $user->hasPermission($section->name);
+        try {
+            $minutes = 60 * 60; // 1 hour
+            $sections = Cache::remember('sections', $minutes, function () {
+                return Section::all();
             });
+
+            foreach ($sections as $section) {
+                Gate::define($section->name, function ($user) use ($section) {
+                    return $user->hasPermission($section->name);
+                });
+            }
+        } catch (\Throwable $e) {
+            // Sections table empty, DB error, or cache issue; continue without section gates
         }
 
 
