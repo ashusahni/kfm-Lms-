@@ -1,57 +1,35 @@
-# ---- Composer ----
-FROM composer:2 AS composer
-WORKDIR /app
+#!/bin/sh
+set -e
 
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --ignore-platform-reqs
+echo "----------------------------------------"
+echo "Starting Laravel application..."
+echo "----------------------------------------"
 
-COPY . .
-RUN composer dump-autoload --optimize --no-scripts
+# Wait a few seconds to ensure database is ready
+echo "Waiting for database connection..."
+sleep 5
 
-# ---- Runtime ----
-FROM php:8.2-fpm-alpine AS runtime
+# Run database migrations
+echo "Running migrations..."
+php artisan migrate --force || true
 
-# PHP extensions Laravel typically needs
-RUN apk add --no-cache \
-    nginx \
-    libzip-dev \
-    libpng-dev \
-    libjpeg-turbo-dev \
-    freetype-dev \
-    oniguruma-dev \
-    icu-dev \
-    linux-headers \
-    postgresql-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) \
-    pdo_mysql \
-    pdo_pgsql \
-    mbstring \
-    exif \
-    pcntl \
-    bcmath \
-    zip \
-    intl \
-    gd \
-    opcache
+# Clear and cache config (prevents cached local configs)
+echo "Clearing and caching configuration..."
+php artisan config:clear
+php artisan cache:clear
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
 
-# Nginx config (full config so "server" is inside http { })
-COPY docker/nginx.conf /etc/nginx/nginx.conf
-# App
-WORKDIR /var/www/html
-COPY --from=composer /app .
-COPY docker/start.sh /start.sh
-RUN chmod +x /start.sh
+# Fix storage permissions (just in case)
+echo "Fixing permissions..."
+chown -R www-data:www-data storage bootstrap/cache || true
+chmod -R 775 storage bootstrap/cache || true
 
-# Remove cached package discovery so production re-discovers (avoids loading dev-only Collision/Ignition)
-RUN rm -f bootstrap/cache/packages.php bootstrap/cache/services.php
+# Start PHP-FPM in background
+echo "Starting PHP-FPM..."
+php-fpm -D
 
-# Laravel storage and cache must be writable
-RUN chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
-
-# Render uses PORT (often 10000); start script substitutes it into nginx config
-ENV PORT=8080
-EXPOSE 8080
-
-CMD ["/start.sh"]
+# Start Nginx in foreground (keeps container alive)
+echo "Starting Nginx..."
+nginx -g "daemon off;"
