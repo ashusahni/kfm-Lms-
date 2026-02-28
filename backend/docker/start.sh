@@ -12,13 +12,24 @@ cd /var/www/html
 chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
 chmod -R 775 storage bootstrap/cache 2>/dev/null || true
 
-# Run migrations (non-fatal so container starts even if DB is temporarily unavailable)
+# Run migrations (retry a few times so DB is ready; non-fatal so container still starts)
 echo "Running migrations..."
-if php artisan migrate --force --no-interaction 2>&1; then
-  echo "Migrations completed."
-else
-  echo "Migrations failed or skipped (continuing anyway)."
-fi
+migrate_attempt=1
+migrate_max=5
+while [ "$migrate_attempt" -le "$migrate_max" ]; do
+  if php artisan migrate --force --no-interaction 2>&1; then
+    echo "Migrations completed."
+    break
+  fi
+  echo "Migrations attempt $migrate_attempt/$migrate_max failed."
+  if [ "$migrate_attempt" -lt "$migrate_max" ]; then
+    echo "Waiting 3s before retry..."
+    sleep 3
+  else
+    echo "Migrations did not succeed (continuing anyway)."
+  fi
+  migrate_attempt=$((migrate_attempt + 1))
+done
 
 # Clear any stale caches before rebuilding (avoids boot errors from old discovery/config)
 php artisan config:clear --no-interaction 2>/dev/null || true
