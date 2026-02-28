@@ -14,8 +14,9 @@ class CreateSectionsTable extends Migration
     public function up()
     {
         Schema::create('sections', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-
+            if (Schema::getConnection()->getDriverName() === 'mysql') {
+                $table->engine = 'InnoDB';
+            }
             $table->increments('id');
             $table->string('name', 64);
             $table->integer('section_group_id')->unsigned()->nullable();

@@ -20,14 +20,24 @@ Route::get('/up', function () {
 
 /* Root "/" without any middleware that touches DB, so it works even when DB is empty or unreachable. */
 Route::get('/', function () {
-    $url = config('frontend.url');
-    if (!empty($url) && !config('frontend.serve_react', false)) {
-        return redirect()->away(rtrim($url, '/') . '/');
+    try {
+        $url = config('frontend.url');
+        if (!empty($url) && !config('frontend.serve_react', false)) {
+            return redirect()->away(rtrim($url, '/') . '/');
+        }
+    } catch (\Throwable $e) {
+        // config not ready; fall through to JSON
+    }
+    $apiUrl = null;
+    try {
+        $apiUrl = config('app.url') ? rtrim(config('app.url'), '/') . '/api/development' : null;
+    } catch (\Throwable $e) {
+        // ignore
     }
     return response()->json([
         'ok' => true,
-        'message' => 'Backend is running. Set FRONTEND_URL in env to redirect the app to your frontend.',
-        'api' => url('/api/development'),
+        'message' => 'Backend is running. Set FRONTEND_URL in env to redirect to your frontend. Admin: /admin',
+        'api' => $apiUrl,
     ], 200);
 })->middleware([]);
 

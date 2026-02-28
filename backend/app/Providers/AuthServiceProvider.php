@@ -12,6 +12,7 @@ use App\Policies\WebinarPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Schema;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -36,6 +37,11 @@ class AuthServiceProvider extends ServiceProvider
     {
 
         $this->registerPolicies();
+
+        // Only load sections when table exists (e.g. after migrations run; avoids 500 on fresh deploy)
+        if (!Schema::hasTable('sections')) {
+            return;
+        }
 
         $minutes = 60 * 60; // 1 hour
         $sections = Cache::remember('sections', $minutes, function () {
