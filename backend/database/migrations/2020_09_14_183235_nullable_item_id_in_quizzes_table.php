@@ -13,9 +13,13 @@ class NullableItemIdInQuizzesTable extends Migration
      */
     public function up()
     {
-        Schema::table('quizzes', function (Blueprint $table) {
-            DB::statement('ALTER TABLE `quizzes` MODIFY `item_id` INTEGER UNSIGNED NULL;');
-        });
+        $driver = Schema::getConnection()->getDriverName();
+        if ($driver === 'mysql') {
+            \DB::statement('ALTER TABLE `quizzes` MODIFY `item_id` INTEGER UNSIGNED NULL;');
+        } else {
+            // PostgreSQL and others: no backticks, use ALTER COLUMN
+            \DB::statement('ALTER TABLE quizzes ALTER COLUMN item_id DROP NOT NULL;');
+        }
     }
 
     /**
@@ -25,8 +29,13 @@ class NullableItemIdInQuizzesTable extends Migration
      */
     public function down()
     {
-        Schema::table('quizzes', function (Blueprint $table) {
-            $table->integer('item_id')->unsigned();
-        });
+        $driver = Schema::getConnection()->getDriverName();
+        if ($driver === 'mysql') {
+            Schema::table('quizzes', function (Blueprint $table) {
+                $table->integer('item_id')->unsigned()->change();
+            });
+        } else {
+            \DB::statement('ALTER TABLE quizzes ALTER COLUMN item_id SET NOT NULL;');
+        }
     }
 }
