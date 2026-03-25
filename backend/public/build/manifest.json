@@ -1,0 +1,17 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-e3b0c442.css",
+    "isEntry": true,
+    "src": "resources/css/app.css"
+  },
+  "resources/css/tailwind.css": {
+    "file": "assets/tailwind-e2375589.css",
+    "isEntry": true,
+    "src": "resources/css/tailwind.css"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-b061ae42.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  }
+}

@@ -1,0 +1,248 @@
+/**
+ * Fit Karnataka Mission - Modern Government-Style Footer
+ * Reusable classes: footer-section, footer-title, footer-links, footer-divider, footer-social, footer-bottom
+ * Dark charcoal background, white headings, muted text, accent hover (red/yellow)
+ */
+
+/* Footer wrapper - dark background when using modern style */
+.footer.footer-modern.fk-footer {
+  background: #1e2d2a !important; /* deep green-charcoal */
+  color: rgba(255, 255, 255, 0.85);
+  position: relative;
+  user-select: none;
+}
+
+.footer.footer-modern.bg-secondary {
+  background: var(--secondary, #171347) !important;
+  color: rgba(255, 255, 255, 0.85);
+  position: relative;
+  user-select: none;
+}
+
+/* When footer uses bg-secondary (non-home), still style the new structure */
+.footer.bg-secondary .footer-title { color: #fff; }
+.footer.bg-secondary .footer-about-desc,
+.footer.bg-secondary .footer-links,
+.footer.bg-secondary .footer-links a { color: rgba(255, 255, 255, 0.85); }
+.footer.bg-secondary .footer-links a:hover { color: #ffc107; }
+.footer.bg-secondary .footer-bottom,
+.footer.bg-secondary .footer-bottom-links a { color: rgba(255, 255, 255, 0.7); }
+.footer.bg-secondary .footer-bottom-links a:hover { color: #ffc107; }
+.footer.bg-secondary .footer-divider { background: rgba(255, 255, 255, 0.15); }
+.footer.bg-secondary .footer-newsletter { border-bottom-color: rgba(255, 255, 255, 0.15); }
+.footer.bg-secondary .footer-social a { background: rgba(255, 255, 255, 0.12); color: #fff; }
+.footer.bg-secondary .footer-social a:hover { background: #c41e3a; color: #fff; }
+.footer.bg-secondary .footer-contact-item,
+.footer.bg-secondary .footer-contact-item a { color: rgba(255, 255, 255, 0.85); }
+
+/* ========== Reusable: footer-section (py-5 main area) ========== */
+.footer-section {
+  padding: 3rem 0;
+}
+
+@media (min-width: 992px) {
+  .footer-section {
+    padding: 3rem 0;
+  }
+}
+
+/* ========== Reusable: footer-title ========== */
+.footer-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+
+/* ========== Reusable: footer-links ========== */
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-links a,
+.footer-links p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  line-height: 1.6;
+  transition: color 0.2s ease, padding-left 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: #ffc107;
+}
+
+/* Inline link lists (when value is HTML from CMS) */
+.footer-col .footer-links a {
+  display: inline-block;
+}
+
+.footer-col .footer-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-col .footer-links ul li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-col .footer-links ul li a {
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-col .footer-links ul li a:hover {
+  color: #ffc107;
+}
+
+/* ========== Reusable: footer-social ========== */
+.footer-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+}
+
+.footer-social a:hover {
+  background: #c41e3a;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.footer-social a img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+/* ========== Reusable: footer-divider ========== */
+.footer-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 0;
+  border: none;
+}
+
+/* ========== Reusable: footer-bottom (py-3 bottom bar) ========== */
+.footer-bottom {
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@media (min-width: 768px) {
+  .footer-bottom {
+    flex-direction: row;
+    padding: 1rem 0;
+  }
+}
+
+.footer-bottom-copyright {
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .footer-bottom-copyright {
+    text-align: left;
+  }
+}
+
+.footer-bottom-links {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.footer-bottom-links a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-bottom-links a:hover {
+  color: #ffc107;
+}
+
+/* Newsletter strip (optional top) */
+.footer-newsletter {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-newsletter .form-control {
+  border-radius: 10px;
+  border: none;
+}
+
+.footer-newsletter .btn-primary {
+  border-radius: 10px;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.footer-newsletter .btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(196, 30, 58, 0.35);
+}
+
+/* About column description */
+.footer-about-desc {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+/* Contact column */
+.footer-contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 0.75rem;
+}
+
+.footer-contact-item svg,
+.footer-contact-item i {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+/* Spacing between columns */
+.footer-col {
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 992px) {
+  .footer-col {
+    margin-bottom: 0;
+  }
+}

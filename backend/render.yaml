@@ -1,0 +1,13 @@
+# Optional: Render Blueprint. In Render Dashboard, set Root Directory to "backend" for this repo.
+services:
+  - type: web
+    name: rocket-lms-backend
+    runtime: docker
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: SERVE_REACT_FROM_BACKEND
+        value: "false"
+    # Set FRONTEND_URL, APP_KEY, JWT_SECRET, API_KEY, DB_* in Dashboard → Environment

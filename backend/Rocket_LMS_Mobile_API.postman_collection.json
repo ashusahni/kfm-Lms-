@@ -1,0 +1,152 @@
+{
+  "info": {
+    "name": "Rocket LMS - Mobile API Testing",
+    "description": "All API endpoints for Rocket LMS mobile application testing. Set base_url (e.g. https://lms.rocket-soft.org or http://127.0.0.1:8000) and api_key in collection variables. After login, set auth_token.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000" },
+    { "key": "api_key", "value": "1234" },
+    { "key": "auth_token", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [ { "key": "token", "value": "{{auth_token}}" } ]
+  },
+  "item": [
+    {
+      "name": "General",
+      "item": [
+        { "name": "Home", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/home" } },
+        { "name": "Fit Karnataka Config", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/fit-karnataka-config" } }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        { "name": "Login", "request": { "method": "POST", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password\"\n}" }, "url": "{{base_url}}/api/development/login" } },
+        { "name": "Register Step", "request": { "method": "POST", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{}" }, "url": "{{base_url}}/api/development/register/step/1" } },
+        { "name": "Forget Password", "request": { "method": "POST", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"email\": \"user@example.com\"\n}" }, "url": "{{base_url}}/api/development/forget-password" } },
+        { "name": "Reset Password", "request": { "method": "POST", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"password\": \"newpassword\",\n  \"password_confirmation\": \"newpassword\"\n}" }, "url": "{{base_url}}/api/development/reset-password/TOKEN_HERE" } },
+        { "name": "Verification", "request": { "method": "POST", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"code\": \"123456\"\n}" }, "url": "{{base_url}}/api/development/verification" } },
+        { "name": "Logout", "request": { "method": "POST", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/logout" } }
+      ]
+    },
+    {
+      "name": "Config",
+      "item": [
+        { "name": "Config List", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/config" } },
+        { "name": "Register Config by Role", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/config/register/student" } }
+      ]
+    },
+    {
+      "name": "Guest - Courses",
+      "item": [
+        { "name": "List Courses", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/courses" } },
+        { "name": "Course Detail", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/courses/1" } },
+        { "name": "Course Content", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/courses/1/content" } },
+        { "name": "Featured Courses", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/featured-courses" } },
+        { "name": "Categories", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/categories" } },
+        { "name": "Search", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/search" } }
+      ]
+    },
+    {
+      "name": "Guest - Blogs & Subscribe",
+      "item": [
+        { "name": "Blogs List", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/blogs" } },
+        { "name": "Blog Detail", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/blogs/1" } },
+        { "name": "Subscribe Plans", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/subscribe" } }
+      ]
+    },
+    {
+      "name": "Guest - Regions & Misc",
+      "item": [
+        { "name": "Countries", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/regions/countries" } },
+        { "name": "Timezones", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/timezones" } }
+      ]
+    },
+    {
+      "name": "Panel - Profile & Summary",
+      "item": [
+        { "name": "Quick Info", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/panel/quick-info" } },
+        { "name": "Profile Setting", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/panel/profile-setting" } },
+        { "name": "Notifications", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/panel/notifications" } }
+      ]
+    },
+    {
+      "name": "Panel - Webinars & My Content",
+      "item": [
+        { "name": "Webinar Purchases", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/panel/webinars/purchases" } },
+        { "name": "My Batches", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/panel/my-batches" } },
+        { "name": "Webinar Certificates", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/panel/webinars/certificates" } },
+        { "name": "Favorites", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/panel/favorites" } }
+      ]
+    },
+    {
+      "name": "Panel - Cart & Payments",
+      "item": [
+        { "name": "Cart List", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/panel/cart/list" } },
+        { "name": "Financial Summary", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/panel/financial/summary" } }
+      ]
+    },
+    {
+      "name": "Panel - Quizzes & Assignments",
+      "item": [
+        { "name": "My Quiz Results", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/panel/quizzes/results/my-results" } },
+        { "name": "My Assignments", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/panel/my_assignments" } }
+      ]
+    },
+    {
+      "name": "Panel - Health Logs",
+      "item": [
+        { "name": "Health Logs List", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/panel/health-logs" } },
+        { "name": "Health Logs Summary", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/panel/health-logs/summary" } }
+      ]
+    },
+    {
+      "name": "Onboarding",
+      "item": [
+        { "name": "Onboarding Profile", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/onboarding/profile" } },
+        { "name": "Health Profile", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/onboarding/health-profile" } },
+        { "name": "Health Conditions", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/onboarding/health-conditions" } },
+        { "name": "Body Goals List", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" } ], "url": "{{base_url}}/api/development/onboarding/body-goals" } }
+      ]
+    },
+    {
+      "name": "Admin - Course & Lesson Unlock",
+      "item": [
+        { "name": "List Courses (Admin)", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" } ], "url": "{{base_url}}/api/development/admin/courses" } },
+        { "name": "Course Detail (Admin)", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" } ], "url": "{{base_url}}/api/development/admin/courses/1" } },
+        { "name": "List Lesson Unlock Rules", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" } ], "url": "{{base_url}}/api/development/admin/courses/1/lessons" } },
+        { "name": "Get Lesson Rule", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" } ], "url": "{{base_url}}/api/development/admin/courses/1/lessons/file/1" } },
+        { "name": "Create/Update Lesson Rule (POST)", "request": { "method": "POST", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"content_type\": \"file\",\n  \"content_id\": 1,\n  \"unlock_type\": \"day\",\n  \"unlock_day_number\": 1,\n  \"is_locked\": false,\n  \"is_visible\": true\n}" }, "url": "{{base_url}}/api/development/admin/courses/1/lessons" } },
+        { "name": "Update Lesson Rule (PATCH)", "request": { "method": "PATCH", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"unlock_type\": \"sequential\",\n  \"prerequisite_content_type\": \"file\",\n  \"prerequisite_content_id\": 1\n}" }, "url": "{{base_url}}/api/development/admin/lessons/1" } },
+        { "name": "Delete Lesson Rule", "request": { "method": "DELETE", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" } ], "url": "{{base_url}}/api/development/admin/lessons/1" } },
+        { "name": "Add Manual Unlock Override", "request": { "method": "POST", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"user_id\": null,\n  \"group_id\": null\n}" }, "url": "{{base_url}}/api/development/admin/courses/1/lessons/file/1/overrides" } },
+        { "name": "Delete Override", "request": { "method": "DELETE", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" } ], "url": "{{base_url}}/api/development/admin/lesson-overrides/1" } },
+        { "name": "Preview Unlock (as user)", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" } ], "url": "{{base_url}}/api/development/admin/courses/1/lessons/file/1/preview?user_id=2" } }
+      ]
+    },
+    {
+      "name": "Dietician - Recipes (Recommended Meals)",
+      "item": [
+        { "name": "List Recipes", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" } ], "url": "{{base_url}}/api/development/dietician/recipes" } },
+        { "name": "Get Recipe", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" } ], "url": "{{base_url}}/api/development/dietician/recipes/1" } },
+        { "name": "Create Recipe", "request": { "method": "POST", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Oats Breakfast\",\n  \"description\": \"Healthy morning oats\",\n  \"ingredients\": \"Oats, milk, honey\",\n  \"calories\": 350,\n  \"protein\": 12,\n  \"carbs\": 55,\n  \"fats\": 8,\n  \"meal_type\": \"breakfast\",\n  \"instructions\": \"Cook oats with milk. Add honey.\"\n}" }, "url": "{{base_url}}/api/development/dietician/recipes" } },
+        { "name": "Update Recipe", "request": { "method": "PATCH", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Oats Breakfast (Updated)\"\n}" }, "url": "{{base_url}}/api/development/dietician/recipes/1" } },
+        { "name": "Delete Recipe", "request": { "method": "DELETE", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" } ], "url": "{{base_url}}/api/development/dietician/recipes/1" } },
+        { "name": "List Student Assignments", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" } ], "url": "{{base_url}}/api/development/dietician/students/2/recipe-assignments" } },
+        { "name": "Assign Recipe to Student", "request": { "method": "POST", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"recipe_id\": 1,\n  \"assigned_for_date\": \"2025-03-16\",\n  \"day_number\": 1,\n  \"meal_slot\": \"breakfast\",\n  \"notes\": \"Day 1 breakfast\"\n}" }, "url": "{{base_url}}/api/development/dietician/students/2/recipe-assignments" } },
+        { "name": "Assign Recipe to Multiple Students (Bulk)", "request": { "method": "POST", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"student_ids\": [2, 3, 4],\n  \"assigned_for_date\": \"2025-03-16\",\n  \"day_number\": 1,\n  \"meal_slot\": \"breakfast\",\n  \"notes\": \"Week 1 plan\"\n}" }, "url": "{{base_url}}/api/development/dietician/recipes/1/assign-bulk" } },
+        { "name": "Remove Assignment", "request": { "method": "DELETE", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" } ], "url": "{{base_url}}/api/development/dietician/recipe-assignments/1" } }
+      ]
+    },
+    {
+      "name": "Panel - Recommended Meals (Student)",
+      "item": [
+        { "name": "My Recommended Meals", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" } ], "url": "{{base_url}}/api/development/panel/recommended-meals" } },
+        { "name": "Recommended Meal Detail", "request": { "method": "GET", "header": [ { "key": "x-api-key", "value": "{{api_key}}" }, { "key": "Authorization", "value": "Bearer {{auth_token}}" } ], "url": "{{base_url}}/api/development/panel/recommended-meals/1" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+<div class="tab-pane mt-3 fade" id="financial" role="tabpanel" aria-labelledby="financial-tab">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <form action="<?php echo e(getAdminPanelUrl()); ?>/users/<?php echo e($user->id .'/financialUpdate'); ?>" method="Post">
+                <?php echo e(csrf_field()); ?>
+
+
+                <div class="form-group">
+                    <label><?php echo e(trans('financial.account_type')); ?></label>
+
+                    <select name="bank_id" class="js-user-bank-input form-control <?php $__errorArgs = ['bank_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>  is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>">
+                        <option selected disabled><?php echo e(trans('financial.select_account_type')); ?></option>
+
+                        <?php $__currentLoopData = $userBanks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $userBank): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($userBank->id); ?>" <?php if(!empty($user) and !empty($user->selectedBank) and $user->selectedBank->user_bank_id == $userBank->id): ?> selected="selected" <?php endif; ?> data-specifications="<?php echo e(json_encode($userBank->specifications->pluck('name','id')->toArray())); ?>"><?php echo e($userBank->title); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </select>
+
+                    <?php $__errorArgs = ['bank_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <div class="invalid-feedback">
+                        <?php echo e($message); ?>
+
+                    </div>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                </div>
+
+                <div class="js-bank-specifications-card">
+                    <?php if(!empty($user) and !empty($user->selectedBank) and !empty($user->selectedBank->bank)): ?>
+                        <?php $__currentLoopData = $user->selectedBank->bank->specifications; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $specification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php
+                                $selectedBankSpecification = $user->selectedBank->specifications->where('user_selected_bank_id', $user->selectedBank->id)->where('user_bank_specification_id', $specification->id)->first();
+                            ?>
+                            <div class="form-group">
+                                <label class="font-weight-500 text-dark-blue"><?php echo e($specification->name); ?></label>
+                                <input type="text" name="bank_specifications[<?php echo e($specification->id); ?>]" value="<?php echo e((!empty($selectedBankSpecification)) ? $selectedBankSpecification->value : ''); ?>" class="form-control"/>
+                            </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endif; ?>
+                </div>
+
+                <div class="form-group mt-15">
+                    <label class="input-label"><?php echo e(trans('financial.identity_scan')); ?></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <button type="button" class="input-group-text admin-file-manager" data-input="identity_scan" data-preview="holder">
+                                <i class="fa fa-chevron-up"></i>
+                            </button>
+                        </div>
+                        <input type="text" name="identity_scan" id="identity_scan" value="<?php echo e(!empty($user->identity_scan) ? $user->identity_scan : old('identity_scan')); ?>" class="form-control"/>
+                        <div class="input-group-append">
+                            <button type="button" class="input-group-text admin-file-view" data-input="identity_scan">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><?php echo e(trans('financial.address')); ?></label>
+                    <input type="text" name="address"
+                           class="form-control "
+                           value="<?php echo e(!empty($user) ? $user->address : old('address')); ?>"
+                           placeholder="<?php echo e(trans('financial.address')); ?>"/>
+                </div>
+
+                <?php if(!$user->isUser()): ?>
+                    <div class="form-group">
+                        <label><?php echo e(trans('admin/main.user_commission')); ?> (%)</label>
+                        <input type="text" name="commission"
+                               class="form-control "
+                               value="<?php echo e(!empty($user) ? $user->commission : old('commission')); ?>"
+                               placeholder="<?php echo e(trans('admin/main.user_commission_placeholder')); ?>"/>
+                    </div>
+                <?php endif; ?>
+
+                <div class="form-group mb-0 d-flex align-items-center">
+                    <div class="custom-control custom-switch d-block">
+                        <input type="checkbox" name="financial_approval" class="custom-control-input" id="verifySwitch" <?php echo e((($user->financial_approval) or (old('financial_approval') == 'on')) ? 'checked' : ''); ?>>
+                        <label class="custom-control-label" for="verifySwitch"></label>
+                    </div>
+                    <label for="verifySwitch"><?php echo e(trans('admin/main.financial_approval')); ?></label>
+                </div>
+
+                
+                <input type="hidden" name="enable_installments" value="0">
+                <input type="hidden" name="installment_approval" value="0">
+                <input type="hidden" name="enable_registration_bonus" value="0">
+
+                <div class=" mt-4">
+                    <button class="btn btn-primary"><?php echo e(trans('admin/main.submit')); ?></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<?php /**PATH C:\Users\ashut\Downloads\Telegram Desktop\rocket-lms_v1.8 (2)\backend\resources\views/admin/users/editTabs/financial.blade.php ENDPATH**/ ?>

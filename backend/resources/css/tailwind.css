@@ -1,0 +1,23 @@
+/**
+ * Tailwind CSS source file (built by Vite).
+ * Use this file for Tailwind directives and any Tailwind-only custom CSS.
+ *
+ * When running alongside Bootstrap: preflight is disabled in tailwind.config.js
+ * to avoid reset conflicts. Enable preflight when you remove Bootstrap.
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Optional: custom Tailwind layer components */
+@layer components {
+  /* Add your Tailwind component classes here, e.g.:
+  .btn-tailwind {
+    @apply px-4 py-2 rounded-lg font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition;
+  }
+  */
+}
+
+@layer utilities {
+  /* Add custom utilities if needed */
+}
